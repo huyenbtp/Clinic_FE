@@ -1,0 +1,76 @@
+import { Box, } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import Sidebar, { type SidebarItem } from "../components/Sidebar";
+import { useAuth } from "../auth/AuthContext";
+import {
+  Home,
+  People,
+  MedicalInformation,
+  Inventory,
+  Person,
+  Medication,
+  MedicationLiquid,
+  ReceiptLong,
+  MedicalServices,
+} from "@mui/icons-material";
+import { Calendar1, ChartArea, } from "lucide-react";
+
+export default function DashboardLayout() {
+  const { role } = useAuth();
+
+  const menuByRole: Record<string, SidebarItem[]> = {
+    Admin: [
+      { label: "Dashboard", path: "/admin", icon: <Home /> },
+      {
+        label: "Staffs",
+        icon: <People />,
+        children: [
+          { label: "Doctors", path: "/admin/staffs/doctors", icon: <People /> },
+          { label: "Receptionists", path: "/admin/staffs/receptionists", icon: <People /> },
+          { label: "Warehouse Staffs", path: "/admin/staffs/warehouse-staffs", icon: <People /> },
+        ],
+      },
+      { label: "Patients", path: "/admin/patients", icon: <People /> },
+      { label: "Appointments", path: "/admin/appointments", icon: <Calendar1 /> },
+      { label: "Services", path: "/admin/services", icon: <MedicalServices /> },
+      { label: "Medicine Inventory", path: "/admin/inventory", icon: <Inventory /> },
+      { label: "Report & Statistic", path: "/admin/statistic", icon: <ChartArea /> },
+    ],
+    Doctor: [
+      { label: "Dashboard", path: "/doctor", icon: <Home /> },
+      { label: "Patient Queue", path: "/doctor/patient-queue", icon: <People /> },
+      { label: "Medical Examination", path: "/doctor/medical-examination", icon: <MedicalInformation /> },
+      { label: "My Appointments", path: "/doctor/my-appointments", icon: <Calendar1 /> },
+      { label: "Profile", path: "/doctor/profile", icon: <Person /> },
+
+    ],
+    Receptionist: [
+      { label: "Dashboard", path: "/receptionist", icon: <Home /> },
+      { label: "Patient Reception", path: "/receptionist/patient-reception", icon: <People /> },
+      { label: "Appointments", path: "/receptionist/appointments", icon: <Calendar1 /> },
+      { label: "Receipts", path: "/receptionist/receipts", icon: <ReceiptLong /> },
+      { label: "Profile", path: "/receptionist/profile", icon: <Person /> },
+    ],
+    WarehouseStaff: [
+      { label: "Dashboard", path: "/warehouse-staff", icon: <Home /> },
+      { label: "Medicine Dispense", path: "/warehouse-staff/dispense", icon: <Medication /> },
+      { label: "Medicine Inventory", path: "/warehouse-staff/inventory", icon: <Inventory /> },
+      { label: "Profile", path: "/warehouse-staff/profile", icon: <Person /> },
+    ],
+    Patient: [
+      { label: "Dashboard", path: "/patient", icon: <Home /> },
+      { label: "My Appointments", path: "/patient/my-appointments", icon: <Calendar1 /> },
+      { label: "Recent Prescriptions", path: "/patient/recent-presciptions", icon: <MedicationLiquid /> },
+      { label: "Profile", path: "/patient/profile", icon: <Person /> },
+    ],
+  };
+
+  return (
+    <Box display="flex" height="100vh" width="100vw">
+      {role && <Sidebar items={menuByRole[role]} />}
+      <Box flex={1} bgcolor="var(--color-bg-default)">
+        <Outlet />
+      </Box>
+    </Box>
+  );
+}

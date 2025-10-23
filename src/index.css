@@ -1,0 +1,115 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+
+  --color-primary-main: #3497F9;
+  --color-primary-light: #3497F9;
+  --color-primary-dark: #004ba0;
+  --color-primary-contrast: #ffffff;
+
+  --color-bg-default: #f1f8ff;
+  --color-bg-paper: #ffffff;
+  --color-bg-tag: #f6f1f1;
+  --color-bg-success: #dbfce7;
+  --color-bg-error: #ffe1e1;
+  --color-bg-warning: #fef9c2;
+  --color-bg-info: #dbeafe;
+
+  --color-text-primary: #404040;
+  --color-text-secondary: #6c7688;
+  --color-text-disabled: #c9c9c9;
+  --color-text-success: #016630;
+  --color-text-error: #fe5757;
+  --color-text-warning: #894b00;
+  --color-text-info: #193cb8;
+
+  --color-border: #e3e3e3;
+
+  --color-shadow-card: #00000008;
+  
+  --color-success-main: #1ab362;
+  --color-error-main: #e7000b;
+  --color-warning-main: #ba6906;
+  --color-info-main: #193cb8;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-bg-default);
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* Optional: Dark mode */
+[data-theme="dark"] {
+  --color-bg-default: #0d1117;
+  --color-bg-paper: #161b22;
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #a1b1c9;
+  --color-text-disabled: #555;
+}
