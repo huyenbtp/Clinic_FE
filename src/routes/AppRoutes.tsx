@@ -7,18 +7,23 @@ import { useAuth } from "../auth/AuthContext";
 
 // Các trang
 import AdminDashboard from "../pages/Admin/Dashboard/page";
+import PatientList from "../pages/SharedPages/PatientList/page";
+import CreatePatient from "../pages/SharedPages/CreatePatient/page";
 
 import DoctorDashboard from "../pages/Doctor/Dashboard/page";
 import PatientQueue from "../pages/Doctor/PatientQueue/page";
 import MedicalExamination from "../pages/Doctor/MedicalExam/page";
 import DoctorManagement from "../pages/Admin/Staff/Doctor/page";
+
+import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
+
+/*
 import PatientPage from "../pages/Patient/crud/PatientPage";
 import NotFound from "../pages/Patient/crud/NotFound";
 import PatientDetail from "../pages/Patient/crud/PatientDetail";
 import CreatePatient from "../pages/Patient/crud/CreatePatient";
 import UpdatePatient from "../pages/Patient/crud/UpdatePatient";
-/*
-import ReceptionDashboard from "../pages/Receptionist/ReceptionDashboard";
+
 import WarehouseStaffDashboard from "../pages/WarehouseStaff/WarehouseStaffDashboard";
 import PatientDashboard from "../pages/Patient/PatientDashboard";
 */
@@ -30,10 +35,7 @@ export default function AppRoutes() {
       
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/test/list_patient" element= {<PatientPage/>}/>
-      <Route path="/test/create_patient" element= {<CreatePatient/>}/>
-      <Route path="/test/patient_detail/:id" element={<PatientDetail/>}/>
-      <Route path="/test/update_patient/:id" element={<UpdatePatient/>}/>
+
       {/* Admin */}
       <Route
         path="/admin"
@@ -45,6 +47,8 @@ export default function AppRoutes() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="staffs/doctors" element={<DoctorManagement />} />
+        <Route path="patients" element={<PatientList />} />
+        <Route path="create-patient" element= {<CreatePatient/>}/>
       </Route>
 
       {/* Doctor */}
@@ -70,6 +74,8 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
+        <Route index element={<ReceptionistDashboard />} />
+        <Route path="patients" element={<PatientList />} />
       </Route>
 
       {/* WarehouseStaff */}
@@ -115,7 +121,14 @@ export default function AppRoutes() {
           )
         }
       />
+      {/*
       <Route path="/not_found" element={<NotFound/>}/>
+      
+      <Route path="/test/list_patient" element= {<PatientPage/>}/>
+      <Route path="/test/create_patient" element= {<CreatePatient/>}/>
+      <Route path="/test/patient_detail/:id" element={<PatientDetail/>}/>
+      <Route path="/test/update_patient/:id" element={<UpdatePatient/>}/>
+      */}
     </Routes>
   );
 }

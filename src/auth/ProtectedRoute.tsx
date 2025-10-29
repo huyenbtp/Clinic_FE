@@ -7,7 +7,9 @@ export const ProtectedRoute = ({
   allow: 'Admin' | 'Doctor' | 'Receptionist' | 'WarehouseStaff' | 'Patient',
   children: JSX.Element
 }) => {
-  const { role } = useAuth();
+  const { role, isInitialized } = useAuth();
+
+  if (!isInitialized) return <div>Loading...</div>;
 
   if (!role) return <Navigate to="/login" replace />;
   if (role !== allow) return (

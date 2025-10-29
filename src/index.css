@@ -14,7 +14,7 @@
 
 
   --color-primary-main: #3497F9;
-  --color-primary-light: #3497F9;
+  --color-primary-light: #EBF5FF;
   --color-primary-dark: #004ba0;
   --color-primary-contrast: #ffffff;
 
@@ -28,6 +28,7 @@
 
   --color-text-primary: #404040;
   --color-text-secondary: #6c7688;
+  --color-text-placeholder: #969696;
   --color-text-disabled: #c9c9c9;
   --color-text-success: #016630;
   --color-text-error: #fe5757;
