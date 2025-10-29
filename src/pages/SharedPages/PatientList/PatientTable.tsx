@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   IconButton,
@@ -9,9 +10,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import { DeleteOutline, Edit, } from "@mui/icons-material";
 import type { Patient } from "../../../types/Patient";
+import { useAuth } from "../../../auth/AuthContext";
 
 export default function PatientTable({
   data,
@@ -20,6 +21,7 @@ export default function PatientTable({
   data: Patient[],
   handleDelete: (id: any) => void,
 }) {
+  const { role } = useAuth();
   const [page, setPage] = useState(1);
   const rowsPerPage = 7;
   const pageData = data.slice((page - 1) * rowsPerPage, page * rowsPerPage);
@@ -73,7 +75,7 @@ export default function PatientTable({
               </TableCell>
 
               <TableCell
-                width="15%"
+                width="12%"
                 align="center"
               >
                 <IconButton sx={{
@@ -86,17 +88,19 @@ export default function PatientTable({
                   <Edit sx={{ fontSize: 20 }} />
                 </IconButton>
 
-                <IconButton
-                  onClick={() => handleDelete(p.patientId)}
-                  sx={{
-                    color: 'var(--color-text-error)',
-                    border: '1px solid var(--color-text-error)',
-                    borderRadius: 1.2,
-                    p: '6px',
-                    mr: 1,
-                  }}>
-                  <DeleteOutline sx={{ fontSize: 20 }} />
-                </IconButton>
+                {role === "Admin" &&
+                  <IconButton
+                    onClick={() => handleDelete(p.patientId)}
+                    sx={{
+                      color: 'var(--color-text-error)',
+                      border: '1px solid var(--color-text-error)',
+                      borderRadius: 1.2,
+                      p: '6px',
+                      mr: 1,
+                    }}>
+                    <DeleteOutline sx={{ fontSize: 20 }} />
+                  </IconButton>
+                }
 
                 <IconButton sx={{
                   color: 'var(--color-text-info)',

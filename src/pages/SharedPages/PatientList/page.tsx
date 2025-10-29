@@ -1,13 +1,12 @@
+import { useState } from "react";
 import { Card, Box, Typography, Button, TextField, InputAdornment, Divider } from "@mui/material";
 import PatientTable from "./PatientTable";
 import { CalendarDays, Search } from "lucide-react";
 import { Add } from "@mui/icons-material";
-import { useState } from "react";
 import AlertDialog from "../../../components/AlertDialog";
 import ActionResultMessage from "../../../components/ActionResultMessage";
 import type { Patient } from "../../../types/Patient";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../auth/AuthContext";
 
 const patientsList: Patient[] = [
 	{
@@ -234,7 +233,6 @@ const patientsList: Patient[] = [
 
 export default function PatientList() {
 	const navigate = useNavigate();
-	const { role } = useAuth();
 	const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
 	const [message, setMessage] = useState('');
@@ -253,16 +251,15 @@ export default function PatientList() {
 			padding: '26px 50px',
 			height: '100%',
 		}}>
-			<Typography variant="h5" fontWeight="bold" m={4} mt={0}>
+			<Typography variant="h5" fontWeight="bold" mx={4} mb={3}>
 				Patient List
 			</Typography>
 
-			<Box flex={1}>
+			<Box flex={1} p="6px">
 				<Card sx={{
 					height: '100%',
 					display: 'flex',
 					flexDirection: 'column',
-					m: '6px',
 					padding: '24px 30px',
 					gap: 1,
 					borderRadius: 2,
@@ -335,10 +332,7 @@ export default function PatientList() {
 						<Button
 							variant="contained"
 							startIcon={<Add sx={{ height: 24, width: 24, }} />}
-							onClick={() => {
-								if (role == 'Admin') navigate('/admin/create-patient');
-								else if (role == 'Receptionist') navigate('/receptionist/create-patient');
-							}}
+							onClick={() => { navigate('create-patient'); }}
 							sx={{
 								borderRadius: 1,
 								textTransform: "none"

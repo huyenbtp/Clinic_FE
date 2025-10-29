@@ -32,7 +32,7 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-      
+
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
 
@@ -46,9 +46,13 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboard />} />
-        <Route path="staffs/doctors" element={<DoctorManagement />} />
-        <Route path="patients" element={<PatientList />} />
-        <Route path="create-patient" element= {<CreatePatient/>}/>
+        <Route path="staffs">
+          <Route path="doctors" element={<DoctorManagement />} />
+        </Route>
+        <Route path="patients">
+          <Route index element={<PatientList />} />
+          <Route path="create-patient" element={<CreatePatient />} />
+        </Route>
       </Route>
 
       {/* Doctor */}
@@ -75,7 +79,10 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<ReceptionistDashboard />} />
-        <Route path="patients" element={<PatientList />} />
+        <Route path="patients">
+          <Route index element={<PatientList />} />
+          <Route path="create-patient" element={<CreatePatient />} />
+        </Route>
       </Route>
 
       {/* WarehouseStaff */}
