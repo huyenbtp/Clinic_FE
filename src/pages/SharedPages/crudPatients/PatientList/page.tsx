@@ -3,9 +3,9 @@ import { Card, Box, Typography, Button, TextField, InputAdornment, Divider } fro
 import PatientTable from "./PatientTable";
 import { CalendarDays, Search } from "lucide-react";
 import { Add } from "@mui/icons-material";
-import AlertDialog from "../../../components/AlertDialog";
-import ActionResultMessage from "../../../components/ActionResultMessage";
-import type { Patient } from "../../../types/Patient";
+import AlertDialog from "../../../../components/AlertDialog";
+import { showMessage } from "../../../../components/ActionResultMessage";
+import type { Patient } from "../../../../types/Patient";
 import { useNavigate } from "react-router-dom";
 
 const patientsList: Patient[] = [
@@ -235,11 +235,8 @@ export default function PatientList() {
 	const navigate = useNavigate();
 	const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
-	const [message, setMessage] = useState('');
-	const [openSnackbar, setOpenSnackbar] = useState(false);
 
-
-	const handleDelete = (id: any) => {
+	const handleConfirmDelete = (id: any) => {
 		setDeleteId(id);
 		setIsDeleteConfirmOpen(true);
 	};
@@ -347,7 +344,7 @@ export default function PatientList() {
 					<Box flex={1} mt={3}>
 						<PatientTable
 							data={patientsList}
-							handleDelete={handleDelete}
+							handleDelete={handleConfirmDelete}
 						/>
 					</Box>
 				</Card>
@@ -363,18 +360,11 @@ export default function PatientList() {
 				onConfirm={() => {
 					if (!deleteId) return;
 
-					setMessage("Patient deletion successful!");
-					setOpenSnackbar(true);
+					showMessage("Patient deletion successful!");
 
 					setIsDeleteConfirmOpen(false);
 					setDeleteId(null);
 				}}
-			/>
-
-			<ActionResultMessage
-				open={openSnackbar}
-				setOpen={setOpenSnackbar}
-				message={message}
 			/>
 		</Box>
 	);

@@ -11,8 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 import { DeleteOutline, Edit, } from "@mui/icons-material";
-import type { Patient } from "../../../types/Patient";
-import { useAuth } from "../../../auth/AuthContext";
+import type { Patient } from "../../../../types/Patient";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../auth/AuthContext";
 
 export default function PatientTable({
   data,
@@ -21,6 +22,7 @@ export default function PatientTable({
   data: Patient[],
   handleDelete: (id: any) => void,
 }) {
+  const navigate = useNavigate();
   const { role } = useAuth();
   const [page, setPage] = useState(1);
   const rowsPerPage = 7;
@@ -78,13 +80,16 @@ export default function PatientTable({
                 width="12%"
                 align="center"
               >
-                <IconButton sx={{
-                  color: 'var(--color-primary-contrast)',
-                  bgcolor: 'var(--color-primary-main)',
-                  borderRadius: 1.2,
-                  p: '6px',
-                  mr: 1,
-                }}>
+                <IconButton
+                  onClick={() => { navigate(`update-patient/${p.patientId}`) }}
+                  sx={{
+                    color: 'var(--color-primary-contrast)',
+                    bgcolor: 'var(--color-primary-main)',
+                    borderRadius: 1.2,
+                    p: '6px',
+                    mr: 1,
+                  }}
+                >
                   <Edit sx={{ fontSize: 20 }} />
                 </IconButton>
 
@@ -102,13 +107,16 @@ export default function PatientTable({
                   </IconButton>
                 }
 
-                <IconButton sx={{
-                  color: 'var(--color-text-info)',
-                  border: '1px solid var(--color-text-info)',
-                  borderRadius: 1.2,
-                  height: 32,
-                  width: 32
-                }}>
+                <IconButton
+                  onClick={() => navigate(`patient-detail/${p.patientId}`)}
+                  sx={{
+                    color: 'var(--color-text-info)',
+                    border: '1px solid var(--color-text-info)',
+                    borderRadius: 1.2,
+                    height: 32,
+                    width: 32
+                  }}
+                >
                   <Typography>i</Typography>
                 </IconButton>
               </TableCell>

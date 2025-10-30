@@ -1,27 +1,30 @@
-import { Alert, Snackbar } from "@mui/material";
-import { useEffect } from "react";
+import { useState } from "react";
+import ReactDOM from "react-dom";
+import { Snackbar, Alert } from "@mui/material";
 
-export default function ActionResultMessage({
-  open,
-  setOpen,
-  message
-}: {
-  open: boolean,
-  setOpen: (open: boolean) => void,
-  message: string
-}) {
-  useEffect(() => {
-    if (open) {
-      const timer = setTimeout(() => setOpen(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-  
-  return (
-    <Snackbar open={open} anchorOrigin={{ vertical: 'top', horizontal: 'center', }}>
-      <Alert severity="success" sx={{ width: '100%', borderRadius: '10px' }}>
+let showMessageFn: (msg: string) => void;
+
+export function showMessage(message: string) {
+  if (showMessageFn) showMessageFn(message);
+  else console.warn("GlobalMessage component chưa được mount.");
+}
+
+export default function ActionResultMessage() {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  showMessageFn = (msg: string) => {
+    setMessage(msg);
+    setOpen(true);
+    setTimeout(() => setOpen(false), 2000);
+  };
+
+  return ReactDOM.createPortal(
+    <Snackbar open={open} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+      <Alert severity="success" sx={{ width: "100%", borderRadius: "10px" }}>
         {message}
       </Alert>
-    </Snackbar>
-  )
+    </Snackbar>,
+    document.body
+  );
 }

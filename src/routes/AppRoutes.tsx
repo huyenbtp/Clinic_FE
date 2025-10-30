@@ -7,8 +7,9 @@ import { useAuth } from "../auth/AuthContext";
 
 // Các trang
 import AdminDashboard from "../pages/Admin/Dashboard/page";
-import PatientList from "../pages/SharedPages/PatientList/page";
-import CreatePatient from "../pages/SharedPages/CreatePatient/page";
+import PatientList from "../pages/SharedPages/crudPatients/PatientList/page";
+import CreateUpdatePatient from "../pages/SharedPages/crudPatients/CreateUpdatePatient/page";
+import PatientDetail from "../pages/SharedPages/crudPatients/PatientDetail/page";
 
 import DoctorDashboard from "../pages/Doctor/Dashboard/page";
 import PatientQueue from "../pages/Doctor/PatientQueue/page";
@@ -51,7 +52,9 @@ export default function AppRoutes() {
         </Route>
         <Route path="patients">
           <Route index element={<PatientList />} />
-          <Route path="create-patient" element={<CreatePatient />} />
+          <Route path="create-patient" element={<CreateUpdatePatient />} />
+          <Route path="update-patient/:id" element={<CreateUpdatePatient />} />
+          <Route path="patient-detail/:id" element={<PatientDetail />}/>
         </Route>
       </Route>
 
@@ -81,7 +84,9 @@ export default function AppRoutes() {
         <Route index element={<ReceptionistDashboard />} />
         <Route path="patients">
           <Route index element={<PatientList />} />
-          <Route path="create-patient" element={<CreatePatient />} />
+          <Route path="create-patient" element={<CreateUpdatePatient />} />
+          <Route path="update-patient/:id" element={<CreateUpdatePatient />} />
+          <Route path="patient-detail/:id" element={<PatientDetail />}/>
         </Route>
       </Route>
 

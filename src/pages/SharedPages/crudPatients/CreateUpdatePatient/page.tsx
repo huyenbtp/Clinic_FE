@@ -1,29 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Card, MenuItem, Select, TextField, Typography } from "@mui/material";
-import AlertDialog from "../../../components/AlertDialog";
-import ActionResultMessage from "../../../components/ActionResultMessage";
-import type { PatientCreateDto } from "../../../types/PatientCreateDto";
-import { useNavigate } from "react-router-dom";
+import AlertDialog from "../../../../components/AlertDialog";
+import { showMessage } from "../../../../components/ActionResultMessage";
+import type { PatientCreateDto } from "../../../../types/PatientCreateDto";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreatePatient() {
+const fakePatient: PatientCreateDto = {
+  fullName: "Nguyen Van An",
+  dateOfBirth: "1995-04-12",
+  gender: "Male",
+  address: "12 Nguyen Trai, Ha Noi",
+  phone: "0901234567",
+  email: "an.nguyen@example.com",
+  idCard: "012345678901",
+  firstVisitDate: "2023-01-10",
+}
+
+const NullPatient: PatientCreateDto = {
+  fullName: "",
+  dateOfBirth: "",
+  gender: "",
+  address: "",
+  phone: "",
+  email: "",
+  idCard: "",
+  firstVisitDate: "",
+}
+
+export default function CreateUpdatePatient() {
+  const { id: patientId } = useParams();
   const navigate = useNavigate();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  
-  const [data, setData] = useState<PatientCreateDto>({
-    fullName: "",
-    dateOfBirth: "",
-    gender: "",
-    address: "",
-    phone: "",
-    email: "",
-    idCard: "",
-    firstVisitDate: "",
-  })
 
-  const handleAddPatient = () => {
+  const [data, setData] = useState<PatientCreateDto>(NullPatient)
+
+  useEffect(() => {
+    if (patientId) {
+      //logic get patient info
+
+      //gắn tạm
+      setData(fakePatient);
+      setIsEditMode(true);
+    }
+    else {
+      setData(NullPatient);
+      setIsEditMode(false);
+    }
+  }, [patientId]);
+
+  const handleConfirm = () => {
+    setConfirmMessage(
+      'Are you sure you want to '
+      + (isEditMode ? 'update' : 'add')
+      + ' this patient?'
+    );
     setIsConfirmDialogOpen(true);
+  }
+
+  const handleSubmit = () => {
+    if (isEditMode) {
+      showMessage("Patient updated successfully!");
+    } else {
+      showMessage("Patient added successfully!");
+    }
+
+    setData(NullPatient);
+    setIsConfirmDialogOpen(false);
+    navigate(`../patient-detail/1`);
   }
 
   return (
@@ -34,7 +79,7 @@ export default function CreatePatient() {
       height: '100%',
     }}>
       <Typography variant="h5" fontWeight="bold" mx={4} mb={3}>
-        Add New Patient
+        {isEditMode ? 'Update Patient Information' : 'Add New Patient'}
       </Typography>
 
       <Box flex={1} p="6px">
@@ -80,7 +125,7 @@ export default function CreatePatient() {
           <Box m={1} display="flex" gap={5}>
             <Box flex={1}>
               <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                DOB
+                Date of Birth
               </Typography>
 
               <TextField
@@ -165,7 +210,7 @@ export default function CreatePatient() {
 
           <Button
             variant="contained"
-            onClick={handleAddPatient}
+            onClick={() => handleConfirm()}
             sx={{
               alignSelf: 'center',
               mt: 5,
@@ -175,42 +220,20 @@ export default function CreatePatient() {
               padding: '8px 40px',
             }}
           >
-            Add Patient
+            {isEditMode ? 'Save' : 'Add Patient'}
           </Button>
         </Card>
       </Box>
 
       <AlertDialog
-        title="Are you sure you want to add this patient?"
+        title={confirmMessage}
         type="info"
         open={isConfirmDialogOpen}
         setOpen={setIsConfirmDialogOpen}
         buttonCancel="Cancel"
         buttonConfirm="Yes"
-        onConfirm={() => {
-          setData(({
-            fullName: "",
-            dateOfBirth: "",
-            gender: "",
-            address: "",
-            phone: "",
-            email: "",
-            idCard: "",
-            firstVisitDate: "",
-          }));
-          setMessage("Successfully added patient!");
-          setOpenSnackbar(true);
-
-          setIsConfirmDialogOpen(false);
-        }}
-      />
-
-      <ActionResultMessage
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        message={message}
+        onConfirm={() => handleSubmit()}
       />
     </Box>
-
   );
 }
