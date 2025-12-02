@@ -7,15 +7,39 @@ import {
   TextField,
   InputAdornment,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Search } from "lucide-react";
 import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import PaymentMethodsTable from "./PaymentMethodsTable";
-import CreatePaymentMethod from "../Create/CreatePaymentMethod";
 import AlertDialog from "../../../../components/AlertDialog";
 import { showMessage } from "../../../../components/ActionResultMessage";
 import { apiCall } from "../../../../api/api";
 import { paymentMethodsSearch, paymentMethodsDelete } from "../../../../api/urls";
+
+function getStatusTextColor(status: string) {
+  switch (status) {
+    case "Active":
+      return "var(--color-text-success)";
+    case "Inactive":
+      return "var(--color-text-error)";
+    default:
+      return "var(--color-text-secondary)";
+  }
+}
+
+function getStatusBgColor(status: string) {
+  switch (status) {
+    case "Active":
+      return "var(--color-bg-success)";
+    case "Inactive":
+      return "var(--color-bg-error)";
+    default:
+      return "transparent";
+  }
+}
 
 interface PaymentMethod {
   paymentMethodId: number;
@@ -27,8 +51,9 @@ interface PaymentMethod {
 }
 
 export default function PaymentMethodsList() {
+  const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [data, setData] = useState<PaymentMethod[]>([]);
@@ -39,11 +64,18 @@ export default function PaymentMethodsList() {
 
   const fetchList = useCallback(() => {
     setLoading(true);
-    const query = `?page=${page - 1}&size=${rowsPerPage}${searchKey ? `&keyword=${encodeURIComponent(searchKey)}` : ""}`;
+    const token = localStorage.getItem("accessToken");
+    let query = `?page=${page - 1}&size=${rowsPerPage}`;
+    if (searchKey) {
+      query += `&keyword=${encodeURIComponent(searchKey)}`;
+    }
+    if (filterStatus !== "") {
+      query += `&isActive=${filterStatus === "Active"}`;
+    }
     apiCall(
       paymentMethodsSearch(query),
       "GET",
-      null,
+      token,
       null,
       (res) => {
         setData(res.data?.content || []);
@@ -55,7 +87,7 @@ export default function PaymentMethodsList() {
         setLoading(false);
       }
     );
-  }, [page, rowsPerPage, searchKey]);
+  }, [page, rowsPerPage, searchKey, filterStatus]);
 
   useEffect(() => {
     fetchList();
@@ -127,7 +159,7 @@ export default function PaymentMethodsList() {
                 sx={{
                   bgcolor: "var(--color-primary-light)",
                   borderRadius: 3,
-                  width: "300px",
+                  width: "280px",
                   "& .MuiInputBase-root": {
                     pl: "18px",
                   },
@@ -141,12 +173,54 @@ export default function PaymentMethodsList() {
                   },
                 }}
               />
+
+              <Select
+                value={filterStatus}
+                onChange={(e) => {
+                  setFilterStatus(e.target.value);
+                  setPage(1);
+                }}
+                displayEmpty
+                sx={{
+                  "& fieldset": {
+                    borderRadius: 3,
+                    borderWidth: 1.6,
+                    borderColor: "var(--color-primary-main)",
+                  },
+                  "& .MuiInputBase-input": {
+                    display: "flex",
+                    width: "120px",
+                    alignItems: "center",
+                    paddingY: "8px",
+                    paddingLeft: "24px",
+                  },
+                }}
+              >
+                <MenuItem value="">
+                  <Box sx={{ padding: "2px 10px" }}>All status</Box>
+                </MenuItem>
+                {["Active", "Inactive"].map((item) => (
+                  <MenuItem key={item} value={item}>
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        borderRadius: 1,
+                        padding: "2px 10px",
+                        color: getStatusTextColor(item),
+                        bgcolor: getStatusBgColor(item),
+                      }}
+                    >
+                      {item}
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Select>
             </Box>
 
             <Button
               variant="contained"
               startIcon={<Add sx={{ height: 24, width: 24 }} />}
-              onClick={() => setIsCreateOpen(true)}
+              onClick={() => navigate("create")}
               sx={{
                 borderRadius: 1,
                 textTransform: "none",
@@ -174,16 +248,6 @@ export default function PaymentMethodsList() {
         </Card>
       </Box>
 
-      <CreatePaymentMethod
-        open={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        onSaved={() => {
-          showMessage("Saved successfully!");
-          setIsCreateOpen(false);
-          fetchList();
-        }}
-      />
-
       <AlertDialog
         title="Are you sure you want to delete this payment method?"
         type="error"
@@ -193,10 +257,11 @@ export default function PaymentMethodsList() {
         buttonConfirm="Delete"
         onConfirm={() => {
           if (!deleteId) return;
+          const token = localStorage.getItem("accessToken");
           apiCall(
             paymentMethodsDelete(deleteId),
             "DELETE",
-            null,
+            token,
             null,
             () => {
               showMessage("Deleted successfully!");

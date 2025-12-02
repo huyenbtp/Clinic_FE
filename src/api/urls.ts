@@ -12,11 +12,11 @@ export const receptionistDeletePatient = (id:number)=>`receptionist/delete_patie
 // Auth
 export const authLogin = "auth/login";
 
-// Admin - Payment Methods
-export const paymentMethodsSearch = (query: string) => `admin/payment-methods/search${query}`;
-export const paymentMethodsCreate = "admin/payment-methods/create";
-export const paymentMethodsUpdate = (id: number) => `admin/payment-methods/update/${id}`;
-export const paymentMethodsDelete = (id: number) => `admin/payment-methods/delete/${id}`;
-export const paymentMethodsGetById = (id: number) => `admin/payment-methods/${id}`;
-export const paymentMethodsGetAll = "admin/payment-methods/all";
-export const paymentMethodsGetActive = "admin/payment-methods/active";
+// Admin - Payment Methods (theo backend controller)
+export const paymentMethodsSearch = (query: string) => `admin/payment-methods${query}`;
+export const paymentMethodsCreate = "admin/payment-methods";
+export const paymentMethodsUpdate = (id: number) => `admin/payment-methods/${id}`;
+export const paymentMethodsDelete = (id: number) => `admin/payment-methods/${id}`;
+export const paymentMethodsGetById = (id: number) => `payment-methods/${id}`;
+export const paymentMethodsGetAll = "payment-methods";
+export const paymentMethodsGetActive = "payment-methods/active";

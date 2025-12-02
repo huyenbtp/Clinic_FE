@@ -10,7 +10,8 @@ export default function PaymentMethodDetail() {
 
   useEffect(() => {
     if (!id) return;
-    apiCall(paymentMethodsGetById(Number(id)), "GET", null, null, (res: any) => {
+    const token = localStorage.getItem("accessToken");
+    apiCall(paymentMethodsGetById(Number(id)), "GET", token, null, (res: any) => {
       setData(res.data || null);
     }, (err: any) => console.error(err));
   }, [id]);
@@ -25,7 +26,7 @@ export default function PaymentMethodDetail() {
         <Typography><strong>Name:</strong> {data.methodName}</Typography>
         <Typography><strong>Description:</strong> {data.description}</Typography>
         <Typography><strong>Sort Order:</strong> {data.sortOrder}</Typography>
-        <Typography><strong>Active:</strong> {data.active ? 'Yes' : 'No'}</Typography>
+        <Typography><strong>Active:</strong> {data.isActive ? 'Yes' : 'No'}</Typography>
       </Card>
     </Box>
   );
