@@ -28,6 +28,7 @@ export default function DashboardLayout() {
           { label: "Doctors", path: "/admin/staffs/doctors", icon: <People /> },
           { label: "Receptionists", path: "/admin/staffs/receptionists", icon: <People /> },
           { label: "Warehouse Staffs", path: "/admin/staffs/warehouse-staffs", icon: <People /> },
+          
         ],
       },
       { label: "Patients", path: "/admin/patients", icon: <People /> },

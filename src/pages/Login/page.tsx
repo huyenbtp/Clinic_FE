@@ -65,6 +65,7 @@ const LoginPage: React.FC = () => {
     }
     localStorage.setItem("accessToken",data.data.accessToken);
     localStorage.setItem("refreshToken",data.data.refreshToken);
+    localStorage.setItem("username",data.data.account.username);
   }
   async function loginToServer() {
     const requestBody = {

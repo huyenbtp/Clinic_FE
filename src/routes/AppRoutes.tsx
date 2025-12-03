@@ -18,6 +18,9 @@ import DoctorManagement from "../pages/Admin/Staff/Doctor/page";
 import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
 import ReceptionList from "../pages/SharedPages/crudsReceptionList/ReceptionList/page";
 import AppointmentList from "../pages/SharedPages/crudsAppointments/AppointmentList/page";
+import ServiecList from "../pages/SharedPages/crudsServices/ServiceList/page";
+import ServiceDetailPage from "../pages/SharedPages/crudsServices/ServiceDetail/ServiceDetail";
+import ServiceCreateForm from "../pages/SharedPages/crudsServices/CreateService/CreateService";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -60,6 +63,11 @@ export default function AppRoutes() {
         <Route path="appointments">
           <Route index element={<AppointmentList />} />
         </Route>
+        <Route path="services">
+          <Route index element={<ServiecList/>}/>
+          <Route path="service-detail/:serviceId" element={<ServiceDetailPage/>}/>
+          <Route path="create" element={<ServiceCreateForm/>}/>
+        </Route>
       </Route>
 
       {/* Doctor */}
@@ -100,6 +108,7 @@ export default function AppRoutes() {
         <Route path="appointments">
           <Route index element={<AppointmentList />} />
         </Route>
+        
       </Route>
 
       {/* WarehouseStaff */}
