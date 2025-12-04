@@ -11,9 +11,11 @@ import PatientList from "../pages/SharedPages/crudsPatients/PatientList/page";
 import CreateUpdatePatient from "../pages/SharedPages/crudsPatients/CreateUpdatePatient/page";
 import PatientDetail from "../pages/SharedPages/crudsPatients/PatientDetail/page";
 import PaymentMethodsList from "../pages/SharedPages/crudsPaymentMethods/List/page";
-import PaymentMethodDetail from "../pages/SharedPages/crudsPaymentMethods/Detail/PaymentMethodDetail";
+
 import SystemParamsList from "../pages/SharedPages/crudsSystemParams/List/page";
 import SystemParamGroupsList from "../pages/SharedPages/crudsSystemParams/Groups/page";
+import PaymentMethodDetail from "../pages/SharedPages/crudsPaymentMethods/Detail/page";
+import CreateUpdatePaymentMethod from "../pages/SharedPages/crudsPaymentMethods/CreateUpdate/page";
 
 import DoctorDashboard from "../pages/Doctor/Dashboard/page";
 import MedicalExamination from "../pages/Doctor/MedicalExam/page";
@@ -22,6 +24,7 @@ import DoctorManagement from "../pages/Admin/Staff/Doctor/page";
 import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
 import ReceptionList from "../pages/SharedPages/crudsReceptionList/ReceptionList/page";
 import AppointmentList from "../pages/SharedPages/crudsAppointments/AppointmentList/page";
+import AppointmentBooking from "../pages/SharedPages/crudsAppointments/AppointmentBooking.tsx/page";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -63,6 +66,8 @@ export default function AppRoutes() {
         </Route>
         <Route path="payment-methods">
           <Route index element={<PaymentMethodsList />} />
+          <Route path="create" element={<CreateUpdatePaymentMethod />} />
+          <Route path="update/:id" element={<CreateUpdatePaymentMethod />} />
           <Route path="detail/:id" element={<PaymentMethodDetail />} />
         </Route>
         <Route path="system-params">
@@ -113,6 +118,7 @@ export default function AppRoutes() {
         <Route path="reception-list" element={<ReceptionList />} />
         <Route path="appointments">
           <Route index element={<AppointmentList />} />
+          <Route path="new" element={<AppointmentBooking />} />
         </Route>
       </Route>
 
@@ -161,7 +167,7 @@ export default function AppRoutes() {
       />
       {/*
       <Route path="/not_found" element={<NotFound/>}/>
-      
+
       <Route path="/test/list_patient" element= {<PatientPage/>}/>
       <Route path="/test/create_patient" element= {<CreatePatient/>}/>
       <Route path="/test/patient_detail/:id" element={<PatientDetail/>}/>

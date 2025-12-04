@@ -11,18 +11,26 @@ export default function CreatePaymentMethod({ open, onClose, onSaved }: { open: 
   const [active, setActive] = useState(true);
 
   const handleSave = () => {
+    const token = localStorage.getItem("accessToken");
     const payload = {
       methodCode,
       methodName,
       description,
       sortOrder,
-      active,
+      isActive: active,
     };
 
-    apiCall(paymentMethodsCreate, "POST", null, JSON.stringify(payload), () => {
+    apiCall(paymentMethodsCreate, "POST", token, JSON.stringify(payload), () => {
       onSaved();
+      // Reset form
+      setMethodCode("");
+      setMethodName("");
+      setDescription("");
+      setSortOrder(0);
+      setActive(true);
     }, (err: any) => {
       console.error(err);
+      alert(err?.message || "Failed to create payment method");
     });
   };
 

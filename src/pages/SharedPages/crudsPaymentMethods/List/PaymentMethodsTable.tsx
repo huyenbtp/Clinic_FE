@@ -120,9 +120,7 @@ export default function PaymentMethodsTable({
                   <TableCell width="13%" align="center">
                     <IconButton
                       onClick={() =>
-                        navigate(
-                          `/admin/payment-methods/detail/${row.paymentMethodId}`
-                        )
+                        navigate(`update/${row.paymentMethodId}`)
                       }
                       sx={{
                         color: "var(--color-primary-contrast)",
@@ -144,10 +142,26 @@ export default function PaymentMethodsTable({
                         borderRadius: 1.2,
                         height: 32,
                         width: 32,
+                        mr: 1,
                       }}
                       title="Delete"
                     >
                       <DeleteOutline sx={{ fontSize: 20 }} />
+                    </IconButton>
+                    <IconButton
+                      onClick={() =>
+                        navigate(`detail/${row.paymentMethodId}`)
+                      }
+                      sx={{
+                        color: "var(--color-text-info)",
+                        border: "1px solid var(--color-primary-main)",
+                        borderRadius: 1.2,
+                        height: 32,
+                        width: 32,
+                      }}
+                      title="View Detail"
+                    >
+                      <Typography>i</Typography>
                     </IconButton>
                   </TableCell>
                 </TableRow>

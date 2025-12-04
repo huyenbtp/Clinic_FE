@@ -13,18 +13,16 @@ export const receptionistDeletePatient = (id: number) =>
 // Auth
 export const authLogin = "auth/login";
 
-// Admin - Payment Methods
 export const paymentMethodsSearch = (query: string) =>
-	`admin/payment-methods/search${query}`;
-export const paymentMethodsCreate = "admin/payment-methods/create";
+	`admin/payment-methods${query}`;
+export const paymentMethodsCreate = "admin/payment-methods";
 export const paymentMethodsUpdate = (id: number) =>
-	`admin/payment-methods/update/${id}`;
-export const paymentMethodsDelete = (id: number) =>
-	`admin/payment-methods/delete/${id}`;
-export const paymentMethodsGetById = (id: number) =>
 	`admin/payment-methods/${id}`;
-export const paymentMethodsGetAll = "admin/payment-methods/all";
-export const paymentMethodsGetActive = "admin/payment-methods/active";
+export const paymentMethodsDelete = (id: number) =>
+	`admin/payment-methods/${id}`;
+export const paymentMethodsGetById = (id: number) => `payment-methods/${id}`;
+export const paymentMethodsGetAll = "payment-methods";
+export const paymentMethodsGetActive = "payment-methods/active";
 
 // Admin - System Param Groups
 export const systemParamGroupsSearch = (query: string) =>
