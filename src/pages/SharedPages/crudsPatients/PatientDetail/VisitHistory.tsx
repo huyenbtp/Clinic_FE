@@ -11,7 +11,7 @@ import {
 import AppointmentsTab from "./AppointmentsTab";
 import MedicalRecordsTab from "./MedicalRecordsTab";
 
-export default function VisitHistory({ patientId }: { patientId: number }) {
+export default function VisitHistory({ patientId, patientTabs}: { patientId: number,patientTabs:any }) {
   const [tab, setTab] = useState(0);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -52,8 +52,8 @@ export default function VisitHistory({ patientId }: { patientId: number }) {
       </Box>
 
       <CardContent>
-        {tab === 0 && <AppointmentsTab patientId={patientId} />}
-        {tab === 1 && <MedicalRecordsTab patientId={patientId} />}
+        {tab === 0 && <AppointmentsTab patientId={patientId} appointments={patientTabs.appointments} />}
+        {tab === 1 && <MedicalRecordsTab patientId={patientId} medicalRecords={patientTabs.medicalRecords} />}
       </CardContent>
     </Card>
   );

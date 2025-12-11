@@ -27,7 +27,7 @@ export default function PatientDetail() {
   const [confirmType, setConfirmType] = useState<'error' | 'warning' | 'info'>('error');
   const [confirmMessage, setConfirmMessage] = useState('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-
+  const [patientTabs,setPatientTabs] = useState<any>(null);
   const [data, setData] = useState<Patient>({
     patientId: 0,
     fullName: "",
@@ -49,6 +49,14 @@ export default function PatientDetail() {
       (data:any)=>{
         alert(data.message);
       });
+    apiCall(`receptionist/patient_tabs/${id}`,'GET',accessToken?accessToken:"",null,
+      (data:any)=>{
+        setPatientTabs(data.data);
+      },
+      (data:any)=>{
+        alert(data.message);
+      }
+    )
   }, []);
 
   const handleConfirmDeletePatient = () => {
@@ -122,7 +130,8 @@ export default function PatientDetail() {
       </Box>
 
       <Box display="flex" p="6px" width="100%">
-        <VisitHistory patientId={data.patientId}/>
+       {patientTabs? <VisitHistory patientId={data.patientId} patientTabs={patientTabs}/>:
+       <div></div>}
       </Box>
 
       <AlertDialog
