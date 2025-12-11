@@ -4,6 +4,7 @@ import AlertDialog from "../../../../components/AlertDialog";
 import { showMessage } from "../../../../components/ActionResultMessage";
 import type { PatientCreateDto } from "../../../../types/PatientCreateDto";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiCall } from "../../../../api/api";
 
 const fakePatient: PatientCreateDto = {
   fullName: "Nguyen Van An",
@@ -41,7 +42,14 @@ export default function CreateUpdatePatient() {
       //logic get patient info
 
       //gắn tạm
-      setData(fakePatient);
+      const accessToken = localStorage.getItem("accessToken");
+    apiCall(`receptionist/get_patient_by_id/${patientId}`,'GET',accessToken?accessToken:"",null,
+      (data:any)=>{
+        setData(data.data);
+      },
+      (data:any)=>{
+        alert(data.message);
+      });
       setIsEditMode(true);
     }
     else {
@@ -60,15 +68,30 @@ export default function CreateUpdatePatient() {
   }
 
   const handleSubmit = () => {
+    const accessToken = localStorage.getItem("accessToken");
     if (isEditMode) {
-      showMessage("Patient updated successfully!");
+      
+      apiCall(`receptionist/update_patient/${patientId}`,'PUT',accessToken?accessToken:"",JSON.stringify(data),(data:any)=>{
+        showMessage("Patient updated successfully!");
+        setData(NullPatient);
+        setIsConfirmDialogOpen(false);
+        navigate(`../patient-detail/${patientId}`);
+      },(data:any)=>{
+        alert(data.message);
+      })
+      
     } else {
-      showMessage("Patient added successfully!");
+      apiCall(`receptionist/create_patient`,'POST',accessToken?accessToken:"",JSON.stringify(data),(data:any)=>{
+        showMessage("Patient created successfully!");
+        setData(NullPatient);
+        setIsConfirmDialogOpen(false);
+        navigate(`../patients`);
+      },(data:any)=>{
+        alert(data.message);
+      })
     }
 
-    setData(NullPatient);
-    setIsConfirmDialogOpen(false);
-    navigate(`../patient-detail/1`);
+    
   }
 
   return (
@@ -149,10 +172,10 @@ export default function CreateUpdatePatient() {
                 <MenuItem value="" disabled>
                   Select
                 </MenuItem>
-                <MenuItem value="Male">
+                <MenuItem value="MALE">
                   Male
                 </MenuItem>
-                <MenuItem value="Female">
+                <MenuItem value="FEMALE">
                   Female
                 </MenuItem>
               </Select>
