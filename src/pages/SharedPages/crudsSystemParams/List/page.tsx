@@ -247,13 +247,13 @@ export default function SystemParamsList() {
 								</Select>
 							</FormControl>
 
-							<Button
+							{/* <Button
 								variant="outlined"
 								onClick={handleSearch}
 								sx={{ textTransform: "none" }}
 							>
 								Search
-							</Button>
+							</Button> */}
 						</Box>
 
 						<Button
