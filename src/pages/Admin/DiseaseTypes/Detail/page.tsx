@@ -6,6 +6,8 @@ import { ChevronLeft } from "lucide-react";
 import { showMessage } from "../../../../components/ActionResultMessage";
 import { apiCall } from "../../../../api/api";
 import { diseaseTypesGetById, diseaseTypesDelete } from "../../../../api/urls";
+import BooleanBadge from "../components/BooleanBadge";
+import AttributesTags from "../components/AttributesTags";
 
 interface DiseaseType {
    diseaseTypeId: number;
@@ -194,55 +196,10 @@ export default function DiseaseTypeDetail() {
                <Box display="flex" gap={5}>
                   <Box flex={1}>
                      <Typography color="text.secondary" fontSize={14}>
-                        Chronic Disease
+                        Attributes
                      </Typography>
                      <Box mt={1}>
-                        {data.chronic ? (
-                           <Chip
-                              label="Yes"
-                              sx={{
-                                 bgcolor: "var(--color-bg-warning)",
-                                 color: "var(--color-text-warning)",
-                                 fontWeight: "500",
-                              }}
-                           />
-                        ) : (
-                           <Chip
-                              label="No"
-                              variant="outlined"
-                              sx={{
-                                 color: "var(--color-text-secondary)",
-                                 borderColor: "var(--color-text-secondary)",
-                              }}
-                           />
-                        )}
-                     </Box>
-                  </Box>
-
-                  <Box flex={1}>
-                     <Typography color="text.secondary" fontSize={14}>
-                        Contagious Disease
-                     </Typography>
-                     <Box mt={1}>
-                        {data.contagious ? (
-                           <Chip
-                              label="Yes"
-                              sx={{
-                                 bgcolor: "var(--color-bg-error)",
-                                 color: "var(--color-text-error)",
-                                 fontWeight: "500",
-                              }}
-                           />
-                        ) : (
-                           <Chip
-                              label="No"
-                              variant="outlined"
-                              sx={{
-                                 color: "var(--color-text-secondary)",
-                                 borderColor: "var(--color-text-secondary)",
-                              }}
-                           />
-                        )}
+                        <AttributesTags chronic={!!data.chronic} contagious={!!data.contagious} size="medium" />
                      </Box>
                   </Box>
                </Box>

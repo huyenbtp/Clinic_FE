@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import BooleanBadge from "../components/BooleanBadge";
+import AttributesTags from "../components/AttributesTags";
 
 function getActiveColor(active: boolean) {
    return active
@@ -68,12 +70,7 @@ export default function DiseaseTypesTable({
                   <TableCell sx={{ fontWeight: "bold" }}>Code</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Description</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }} align="center">
-                     Chronic
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }} align="center">
-                     Contagious
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Attributes</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
                      Action
@@ -84,7 +81,7 @@ export default function DiseaseTypesTable({
             <TableBody>
                {loading ? (
                   <TableRow>
-                     <TableCell colSpan={8} align="center">
+                     <TableCell colSpan={7} align="center">
                         <CircularProgress size={28} sx={{ my: 2 }} />
                      </TableCell>
                   </TableRow>
@@ -110,40 +107,10 @@ export default function DiseaseTypesTable({
                            >
                               {row.description || "N/A"}
                            </TableCell>
-                           <TableCell width="8%" align="center">
-                              {row.chronic ? (
-                                 <Chip
-                                    label="Yes"
-                                    size="small"
-                                    sx={{
-                                       bgcolor: "var(--color-bg-warning)",
-                                       color: "var(--color-text-warning)",
-                                       fontWeight: "500",
-                                    }}
-                                 />
-                              ) : (
-                                 <Typography color="var(--color-text-secondary)">
-                                    No
-                                 </Typography>
-                              )}
+                           <TableCell width="20%">
+                              <AttributesTags chronic={!!row.chronic} contagious={!!row.contagious} />
                            </TableCell>
-                           <TableCell width="8%" align="center">
-                              {row.contagious ? (
-                                 <Chip
-                                    label="Yes"
-                                    size="small"
-                                    sx={{
-                                       bgcolor: "var(--color-bg-error)",
-                                       color: "var(--color-text-error)",
-                                       fontWeight: "500",
-                                    }}
-                                 />
-                              ) : (
-                                 <Typography color="var(--color-text-secondary)">
-                                    No
-                                 </Typography>
-                              )}
-                           </TableCell>
+
                            <TableCell width="10%">
                               <Box
                                  sx={{
@@ -213,7 +180,7 @@ export default function DiseaseTypesTable({
                   })
                ) : (
                   <TableRow>
-                     <TableCell colSpan={8} align="center">
+                     <TableCell colSpan={7} align="center">
                         No data available
                      </TableCell>
                   </TableRow>
