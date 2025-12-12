@@ -28,7 +28,13 @@ import DoctorManagement from "../pages/Admin/Staff/Doctor/page";
 import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
 import ReceptionList from "../pages/SharedPages/crudsReceptionList/ReceptionList/page";
 import AppointmentList from "../pages/SharedPages/crudsAppointments/AppointmentList/page";
+import ServiecList from "../pages/SharedPages/crudsServices/ServiceList/page";
+import ServiceDetailPage from "../pages/SharedPages/crudsServices/ServiceDetail/ServiceDetail";
+import ServiceCreateForm from "../pages/SharedPages/crudsServices/CreateService/CreateService";
 import AppointmentBooking from "../pages/SharedPages/crudsAppointments/AppointmentBooking.tsx/page";
+import AppointmentDetail from "../pages/SharedPages/crudsAppointments/AppointmentDetail/AppointmentDetail";
+import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
+import InvoiceDetail from "../pages/SharedPages/crudInvoice/InvoiceDetail/InvoiceDetail";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -59,6 +65,9 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboard />} />
+        <Route path="appointment/:id" element={<AppointmentDetail />} />
+        <Route path="medical_record/:id" element={<MedicalRecordDetail />} />
+        <Route path="invoice/:id" element={<InvoiceDetail />} />
         <Route path="staffs">
           <Route path="doctors" element={<DoctorManagement />} />
         </Route>
@@ -88,6 +97,11 @@ export default function AppRoutes() {
         </Route>
         <Route path="appointments">
           <Route index element={<AppointmentList />} />
+        </Route>
+        <Route path="services">
+          <Route index element={<ServiecList />} />
+          <Route path="service-detail/:serviceId" element={<ServiceDetailPage />} />
+          <Route path="create" element={<ServiceCreateForm />} />
         </Route>
       </Route>
 
@@ -130,6 +144,10 @@ export default function AppRoutes() {
           <Route index element={<AppointmentList />} />
           <Route path="new" element={<AppointmentBooking />} />
         </Route>
+
+        <Route path="appointment/:id" element={<AppointmentDetail />} />
+        <Route path="medical_record/:id" element={<MedicalRecordDetail />} />
+        <Route path="invoice/:id" element={<InvoiceDetail />} />
 
       </Route>
 

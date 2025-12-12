@@ -18,9 +18,10 @@ const LoginPage: React.FC = () => {
     loginToServer();
 
   };
-  function loginSuccess(data: any) {
-    const token = data.data.accessToken;
+  function loginSuccess(data:any) {
 
+    const token = data.data.accessToken;
+    
     switch (selectedRole) {
       case 'Admin':
         if (data.data.account.role != "ADMIN") {
@@ -31,7 +32,7 @@ const LoginPage: React.FC = () => {
         navigate('/admin');
         break;
       case 'Doctor':
-        if (data.data.account.role != "DOCTOR") {
+        if(data.data.account.role!="DOCTOR") {
           alert("Đăng nhập thất bại");
           return;
         }
@@ -39,7 +40,7 @@ const LoginPage: React.FC = () => {
         navigate('/doctor');
         break;
       case 'Receptionist':
-        if (data.data.account.role != "RECEPTIONIST") {
+        if(data.data.account.role!="RECEPTIONIST") {
           alert("Đăng nhập thất bại");
           return;
         }
@@ -47,7 +48,7 @@ const LoginPage: React.FC = () => {
         navigate('/receptionist');
         break;
       case 'WarehouseStaff':
-        if (data.data.account.role != "WAREHOUSE_STAFF") {
+        if(data.data.account.role!="WAREHOUSE_STAFF") {
           alert("Đăng nhập thất bại");
           return;
         }
@@ -55,7 +56,7 @@ const LoginPage: React.FC = () => {
         navigate('/warehouse-staff');
         break;
       case 'Patient':
-        if (data.data.account.role != "PATIENT") {
+        if(data.data.account.role!="PATIENT") {
           alert("Đăng nhập thất bại");
           return;
         }
@@ -66,8 +67,9 @@ const LoginPage: React.FC = () => {
         navigate('/');
         break;
     }
-    localStorage.setItem("accessToken", token);
-    localStorage.setItem("refreshToken", data.data.refreshToken);
+    localStorage.setItem("accessToken",data.data.accessToken);
+    localStorage.setItem("refreshToken",data.data.refreshToken);
+    localStorage.setItem("username",data.data.account.username);
   }
   async function loginToServer() {
     const requestBody = {

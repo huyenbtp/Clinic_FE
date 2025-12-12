@@ -20,6 +20,8 @@ import type { Reception } from "../../../../types/Reception";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../auth/AuthContext";
+import { apiCall } from "../../../../api/api";
+import { Edit } from "lucide-react";
 
 export function getStatusBgColor(status: string): string {
   if (status === 'Admitted - Waiting') {
@@ -146,21 +148,40 @@ export default function ReceptionTable() {
   const [data, setData] = useState<Reception[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  const fetchReceptions = async () => {
-    setLoading(true);
-    // Mô phỏng loading trong 500ms rồi render giao diện
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(timeout);
+  const [listReceptions, setListReceptions] = useState<Reception[]>([]);
+  function mapData(listReceptions:any):Reception[] {
+    return listReceptions.map((item:any)=>{
+      const reception:Reception={
+        receptionId: item.receptionId,
+        patientName: item.patient.fullName,
+        receptionDate: item.receptionDate,
+        patientId: item.patient.patientId,
+        receptionistName: item.receptionist.fullName,
+        receptionistId: item.receptionist.staffId,
+        status: item.status
+      };
+      return reception;
+    })
+  }
+  const fetchReceptions = async (page:number, pageSize:number) => {
+    const accessToken = localStorage.getItem("accessToken");
+    apiCall(`receptionist/all_receptions?pageNumber=${page-1}&pageSize=${pageSize}`,"GET",accessToken?accessToken:"",null,
+      (data:any)=>{
+        console.log(data.data.content);
+        setData(mapData(data.data.content));
+        setTotalItems(data.data.totalElements);
+      },
+      (data:any)=>{
+        alert(data.message);
+      }
+    )
 
   };
 
   useEffect(() => {
-    fetchReceptions();
-    setData(fakeData.slice(0, rowsPerPage)) //sau khi fetch data thật thì xóa dòng này đi
-    setTotalItems(10)
+    fetchReceptions(page,rowsPerPage);
+    
+    
   }, [page, rowsPerPage]);
 
 
@@ -233,12 +254,23 @@ export default function ReceptionTable() {
                         icon: PlayCircleOutline,
                         onClick: () => { },
                       },
-                    ] : [
+                    ] : row.status=="WAITING"?[
                       {
                         label: "View patient",
                         icon: Visibility,
                         onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
                       },
+                      {
+                        label:"Change Status",
+                        icon: Edit,
+                        onClick:()=>{}
+                      }
+                    ]:[
+                      {
+                        label: "View patient",
+                        icon: Visibility,
+                        onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
+                      }
                     ]}
                   />
                 </TableCell>

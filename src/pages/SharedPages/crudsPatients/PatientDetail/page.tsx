@@ -7,6 +7,8 @@ import type { Patient } from "../../../../types/Patient";
 import { showMessage } from "../../../../components/ActionResultMessage";
 import PatientInformation from "./PatientInformation";
 import VisitHistory from "./VisitHistory";
+import { apiCall } from "../../../../api/api";
+import { useAuth } from "../../../../auth/AuthContext";
 
 const fakePatient = {
   patientId: 1,
@@ -26,7 +28,8 @@ export default function PatientDetail() {
   const [confirmType, setConfirmType] = useState<'error' | 'warning' | 'info'>('error');
   const [confirmMessage, setConfirmMessage] = useState('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-
+  const [patientTabs,setPatientTabs] = useState<any>(null);
+  const role = useAuth();
   const [data, setData] = useState<Patient>({
     patientId: 0,
     fullName: "",
@@ -40,7 +43,25 @@ export default function PatientDetail() {
   })
 
   useEffect(() => {
-    setData(fakePatient);
+    let prefix="";
+    if(role.role=="Admin") prefix="admin";
+    if(role.role=="Receptionist") prefix="receptionist";
+    const accessToken = localStorage.getItem("accessToken");
+    apiCall(`${prefix}/get_patient_by_id/${id}`,'GET',accessToken?accessToken:"",null,
+      (data:any)=>{
+        setData(data.data);
+      },
+      (data:any)=>{
+        alert(data.message);
+      });
+    apiCall(`${prefix}/patient_tabs/${id}`,'GET',accessToken?accessToken:"",null,
+      (data:any)=>{
+        setPatientTabs(data.data);
+      },
+      (data:any)=>{
+        alert(data.message);
+      }
+    )
   }, []);
 
   const handleConfirmDeletePatient = () => {
@@ -50,10 +71,22 @@ export default function PatientDetail() {
   }
 
   const handleDeletePatient = () => {
-    showMessage("Patient deleted successfully!");
+    let prefix="";
+    if(role.role=="Admin") prefix="admin";
+    if(role.role=="Receptionist") prefix="receptionist";
+    const accessToken = localStorage.getItem("accessToken");
+    apiCall(`${prefix}/delete_patient/${id}`,'DELETE',accessToken,null,
+      (data:any)=>{
+        showMessage("Patient deleted successfully!");
 
-    setIsConfirmDialogOpen(false);
-    navigate('..');
+        setIsConfirmDialogOpen(false);
+        navigate(`/${prefix}/patients`);
+      },
+      (data:any)=>{
+        alert(data.message);
+      }
+    )
+    
   }
 
   return (
@@ -114,7 +147,8 @@ export default function PatientDetail() {
       </Box>
 
       <Box display="flex" p="6px" width="100%">
-        <VisitHistory patientId={data.patientId}/>
+       {patientTabs? <VisitHistory patientId={data.patientId} patientTabs={patientTabs}/>:
+       <div></div>}
       </Box>
 
       <AlertDialog
