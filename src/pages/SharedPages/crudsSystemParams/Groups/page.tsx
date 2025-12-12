@@ -184,13 +184,13 @@ export default function SystemParamGroupsList() {
                            ),
                         }}
                      />
-                     <Button
+                     {/* <Button
                         variant="outlined"
                         onClick={handleSearch}
                         sx={{ textTransform: "none" }}
                      >
                         Search
-                     </Button>
+                     </Button> */}
                   </Box>
 
                   <Button
