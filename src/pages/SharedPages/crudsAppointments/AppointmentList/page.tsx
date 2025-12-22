@@ -54,7 +54,7 @@ export default function AppointmentList() {
       <Typography variant="h5" fontWeight="bold" mx={4} mb={3}>
         Appointments
       </Typography>
-
+      
       <Box flex={1} p="6px">
         <Card sx={{
           height: '100%',
