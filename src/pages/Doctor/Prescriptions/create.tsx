@@ -175,7 +175,7 @@ const PrescriptionCreatePage = () => {
 
         setLoading(true);
         
-        // Chuẩn bị payload (loại bỏ tempId)
+       
         const payload = {
             recordId: formData.recordId,
             notes: formData.notes,

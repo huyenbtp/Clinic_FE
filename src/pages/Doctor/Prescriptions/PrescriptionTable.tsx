@@ -16,7 +16,7 @@ import {
   Paper,
   TableContainer
 } from "@mui/material";
-import { VisibilityOutlined } from "@mui/icons-material";
+import { UpdateOutlined, VisibilityOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { apiCall } from "../../../api/api";
@@ -216,6 +216,17 @@ export default function PrescriptionTable({ searchKey, date }: PrescriptionTable
                             }}
                         >
                             <VisibilityOutlined sx={{ fontSize: 18 }} />
+                        </IconButton>
+                        <IconButton
+                        onClick={() => navigate(`/doctor/prescription/update/${row.prescriptionId}`)}
+                            sx={{
+                                color: 'var(--color-text-info)',
+                                border: '1px solid var(--color-primary-main)',
+                                borderRadius: 1.2,
+                                height: 32,
+                                width: 32
+                            }}>
+                          <UpdateOutlined sx={{fontSize: 18}}/>
                         </IconButton>
                     </TableCell>
                 </TableRow>
