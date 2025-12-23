@@ -49,6 +49,7 @@ import PrescriptionListPage from "../pages/Doctor/Prescriptions/page";
 import PrescriptionDetail from "../pages/Doctor/Prescriptions/detail";
 import PrescriptionCreatePage from "../pages/Doctor/Prescriptions/create";
 import PrescriptionUpdatePage from "../pages/Doctor/Prescriptions/update";
+import AppointmentUpdate from "../pages/SharedPages/crudsAppointments/AppointmentDetail/EditAppointment";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -176,6 +177,7 @@ export default function AppRoutes() {
         <Route path="appointment/:id" element={<AppointmentDetail />} />
         <Route path="medical_record/:id" element={<MedicalRecordDetail />} />
         <Route path="invoice/:id" element={<InvoiceDetail />} />
+        <Route path="appointment/update/:appointmentId" element={<AppointmentUpdate/>}/>
 
       </Route>
 
@@ -205,6 +207,8 @@ export default function AppRoutes() {
       >
         <Route path="appointments" element={<AppointmentList/>}/>
         <Route path="book_appointment" element={<AppointmentBooking/>}/>
+        <Route path="appointment/:id" element={<AppointmentDetail />} />
+        <Route path="appointment/update/:appointmentId" element={<AppointmentUpdate/>}/>
       </Route>
 
       {/* Redirect fallback */}

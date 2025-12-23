@@ -294,7 +294,7 @@ export default function AppointmentTable({
                   }
 
                   <IconButton
-                    onClick={() => { navigate(`/${role}/patients/patient-detail/${row.patient_id}`) }}
+                    onClick={() => { navigate(`/${role?.toLowerCase}/patients/patient-detail/${row.patient_id}`) }}
                     sx={{
                       color: 'var(--color-text-info)',
                       border: '1px solid var(--color-primary-main)',
@@ -305,6 +305,22 @@ export default function AppointmentTable({
                     title="View Patient"
                   >
                     <Typography>i</Typography>
+                  </IconButton>
+                  <IconButton
+                    onClick={() => { 
+                      const prefix = role=="Patient"?"patient":"receptionist";
+                      navigate(`/${prefix}/appointment/${row.appointment_id}`)
+                     }}
+                    sx={{
+                      color: 'var(--color-text-info)',
+                      border: '1px solid var(--color-primary-main)',
+                      borderRadius: 1.2,
+                      height: 32,
+                      width: 32
+                    }}
+                    title="View appointment"
+                  >
+                    <Typography>D</Typography>
                   </IconButton>
                 </TableCell>
               </TableRow>

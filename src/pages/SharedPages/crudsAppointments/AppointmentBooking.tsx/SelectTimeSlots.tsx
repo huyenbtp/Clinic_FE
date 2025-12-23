@@ -42,6 +42,7 @@ export default function SelectTimeSlot({
       return;
     }
     const url = `unsecure/doctor_schedule?doctorId=${selectedDoctor.id}&selectedDate=${selectedDate}`;
+    console.log("URLLLL",url);
     console.log(selectedDate);
     apiCall(url,"GET",null,null,(data:any)=>{
       const timeSlotsData= data.data.map(item=>{
@@ -95,7 +96,7 @@ export default function SelectTimeSlot({
             gap: '12px',
             mt: 3,
           }}>
-            {timeSlots.map((slot, index) => (
+            {timeSlots&&timeSlots.map((slot, index) => (
               <Button
                 key={index}
                 onClick={() =>{ 
