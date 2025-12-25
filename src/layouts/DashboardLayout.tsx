@@ -15,6 +15,7 @@ import {
   Payment,
   Settings,
   LocalHospital,
+  FolderOpen,
 } from "@mui/icons-material";
 import { Calendar1, ChartArea, FolderTree } from "lucide-react";
 
@@ -76,6 +77,7 @@ export default function DashboardLayout() {
     Patient: [
       { label: "Dashboard", path: "/patient", icon: <Home /> },
       { label: "My Appointments", path: "/patient/appointments", icon: <Calendar1 /> },
+      { label: "Medical Records", path: "/patient/medical-records", icon: <FolderOpen /> },
       { label: "Recent Prescriptions", path: "/patient/recent-presciptions", icon: <MedicationLiquid /> },
       { label: "Profile", path: "/patient/profile", icon: <Person /> },
     ],

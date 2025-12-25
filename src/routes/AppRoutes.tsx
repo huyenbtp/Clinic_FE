@@ -22,7 +22,6 @@ import CreateUpdateDiseaseType from "../pages/Admin/DiseaseTypes/CreateUpdate/pa
 import DiseaseTypeDetail from "../pages/Admin/DiseaseTypes/Detail/page";
 
 // Staff Management
-import StaffList from "../pages/Admin/Staff/List/page";
 import DoctorsList from "../pages/Admin/Staff/Doctors/page";
 import ReceptionistsList from "../pages/Admin/Staff/Receptionists/page";
 import WarehouseStaffsList from "../pages/Admin/Staff/WarehouseStaffs/page";
@@ -45,6 +44,10 @@ import AppointmentBooking from "../pages/SharedPages/crudsAppointments/Appointme
 import AppointmentDetail from "../pages/SharedPages/crudsAppointments/AppointmentDetail/AppointmentDetail";
 import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
 import InvoiceDetail from "../pages/SharedPages/crudInvoice/InvoiceDetail/InvoiceDetail";
+
+// Patient Medical Records
+import MedicalRecordsPage from "../pages/Patient/MedicalRecords/MedicalRecordsPage";
+import MedicalRecordDetailPage from "../pages/Patient/MedicalRecords/MedicalRecordDetailPage";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -180,7 +183,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        
+
 
       </Route>
 
@@ -190,12 +193,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute allow="Patient">
             <DashboardLayout />
-            
+
           </ProtectedRoute>
-          
+
         }
       >
-        <Route path="appointments" element={<AppointmentBooking/>}/>
+        <Route path="appointments" element={<AppointmentBooking />} />
+        <Route path="medical-records" element={<MedicalRecordsPage />} />
+        <Route path="medical-record/:recordId" element={<MedicalRecordDetailPage />} />
       </Route>
 
       {/* Redirect fallback */}
