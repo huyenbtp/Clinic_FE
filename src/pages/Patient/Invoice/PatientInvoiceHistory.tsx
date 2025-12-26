@@ -6,11 +6,8 @@ import {
 	Table,
 	TableBody,
 	TableCell,
-	TableContainer,
 	TableHead,
 	TableRow,
-	TablePagination,
-	Chip,
 	IconButton,
 	TextField,
 	FormControl,
@@ -19,11 +16,13 @@ import {
 	MenuItem,
 	InputAdornment,
 	CircularProgress,
+	Pagination,
+	Button,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import {
-	Visibility as ViewIcon,
 	Search as SearchIcon,
-	Receipt as ReceiptIcon,
+	Refresh as RefreshIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/AuthContext";
@@ -36,11 +35,11 @@ const PatientInvoiceHistory: React.FC = () => {
 	const { token } = useAuth();
 
 	const [invoices, setInvoices] = useState<InvoiceListItem[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [totalElements, setTotalElements] = useState(0);
 
 	// Pagination
-	const [page, setPage] = useState(0);
+	const [page, setPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 
 	// Filters
@@ -50,7 +49,8 @@ const PatientInvoiceHistory: React.FC = () => {
 	const fetchInvoices = useCallback(() => {
 		setLoading(true);
 
-		let url = `${patientInvoices}?page=${page}&size=${rowsPerPage}`;
+		const pageIndex = page - 1;
+		let url = `${patientInvoices}?page=${pageIndex}&size=${rowsPerPage}`;
 		if (statusFilter) {
 			url += `&paymentStatus=${statusFilter}`;
 		}
@@ -60,26 +60,53 @@ const PatientInvoiceHistory: React.FC = () => {
 			"GET",
 			token,
 			null,
-			(response: {
-				data: {
-					content: InvoiceListItem[];
-					totalElements: number;
-				};
-			}) => {
-				let data = response.data.content;
-				// Client-side filter by date if needed
-				if (searchDate) {
-					data = data.filter(
-						(inv) =>
-							inv.invoiceDate && inv.invoiceDate.startsWith(searchDate)
-					);
+			(response: any) => {
+				console.log("🔥 DEBUG API Response:", response);
+
+				// Thử lấy data theo 2 cách phổ biến
+				// Cách 1: Giả sử response là Axios Object (có lớp .data bọc ngoài)
+				const path1 = response?.data?.data?.content;
+				
+				// Cách 2: Giả sử response là JSON Body (apiCall đã bóc vỏ)
+				const path2 = response?.data?.content;
+
+				console.log("Path 1 (response.data.data.content):", path1);
+				console.log("Path 2 (response.data.content):", path2);
+
+				// Lấy cái nào có dữ liệu
+				let finalContent: InvoiceListItem[] = [];
+				let finalTotal = 0;
+
+				if (Array.isArray(path1)) {
+					console.log("✅ Sử dụng Path 1 (response.data.data.content)");
+					finalContent = path1;
+					finalTotal = response.data.data.totalElements || 0;
+				} else if (Array.isArray(path2)) {
+					console.log("✅ Sử dụng Path 2 (response.data.content)");
+					finalContent = path2;
+					finalTotal = response.data.totalElements || 0;
+				} else {
+					console.error("❌ Không tìm thấy mảng dữ liệu trong response");
+					console.log("Response structure:", JSON.stringify(response, null, 2));
 				}
-				setInvoices(data);
-				setTotalElements(response.data.totalElements);
+
+				// Filter client-side (nếu cần)
+				if (searchDate && finalContent.length > 0) {
+					console.log("🔍 Filtering by date:", searchDate);
+					finalContent = finalContent.filter((inv: InvoiceListItem) => 
+						inv.invoiceDate && inv.invoiceDate.startsWith(searchDate)
+					);
+					console.log("Filtered results:", finalContent.length);
+				}
+
+				setInvoices(finalContent);
+				setTotalElements(finalTotal);
 				setLoading(false);
 			},
 			(error: any) => {
-				console.error("Error fetching invoices:", error);
+				console.error("❌ Error fetching invoices:", error);
+				setInvoices([]);
+				setTotalElements(0);
 				setLoading(false);
 			}
 		);
@@ -89,13 +116,15 @@ const PatientInvoiceHistory: React.FC = () => {
 		fetchInvoices();
 	}, [fetchInvoices]);
 
-	const handleChangePage = (_: unknown, newPage: number) => {
-		setPage(newPage);
+	const handleSearch = () => {
+		setPage(1);
+		fetchInvoices();
 	};
 
-	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
+	const handleReset = () => {
+		setStatusFilter("");
+		setSearchDate("");
+		setPage(1);
 	};
 
 	const formatCurrency = (amount: number) => {
@@ -107,150 +136,265 @@ const PatientInvoiceHistory: React.FC = () => {
 
 	const formatDate = (dateStr: string) => {
 		if (!dateStr) return "-";
-		return new Date(dateStr).toLocaleDateString("vi-VN");
+		return new Date(dateStr).toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+		});
 	};
 
-	const getStatusColor = (status: PaymentStatus) => {
+	const getStatusStyle = (status: PaymentStatus) => {
 		switch (status) {
 			case "PAID":
-				return "success";
+				return { bg: "var(--color-bg-success)", text: "var(--color-text-success)", label: "Paid" };
 			case "UNPAID":
-				return "warning";
+				return { bg: "var(--color-bg-warning)", text: "var(--color-text-warning)", label: "Unpaid" };
 			case "REFUNDED":
-				return "info";
+				return { bg: "var(--color-bg-info)", text: "var(--color-text-info)", label: "Refunded" };
 			default:
-				return "default";
-		}
-	};
-
-	const getStatusLabel = (status: PaymentStatus) => {
-		switch (status) {
-			case "PAID":
-				return "Đã thanh toán";
-			case "UNPAID":
-				return "Chưa thanh toán";
-			case "REFUNDED":
-				return "Đã hoàn tiền";
-			default:
-				return status;
+				return { bg: "var(--color-bg-secondary)", text: "var(--color-text-secondary)", label: status };
 		}
 	};
 
 	return (
-		<Box sx={{ p: 3 }}>
-			{/* Header */}
-			<Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-				<ReceiptIcon sx={{ fontSize: 32, mr: 2, color: "primary.main" }} />
-				<Typography variant="h5">Lịch sử hóa đơn</Typography>
-			</Box>
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				padding: "26px 50px",
+				gap: 3,
+				height: "100%",
+				overflowY: "auto",
+			}}
+		>
+			<Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+				Invoice History
+			</Typography>
 
-			{/* Filters */}
-			<Paper sx={{ p: 2, mb: 3 }}>
-				<Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-					<TextField
-						type="date"
-						label="Ngày lập"
-						value={searchDate}
-						onChange={(e) => setSearchDate(e.target.value)}
-						InputLabelProps={{ shrink: true }}
-						size="small"
-						sx={{ width: 200 }}
-					/>
-					<FormControl size="small" sx={{ minWidth: 200 }}>
-						<InputLabel>Trạng thái</InputLabel>
-						<Select
-							value={statusFilter}
-							label="Trạng thái"
-							onChange={(e) => setStatusFilter(e.target.value)}
-						>
-							<MenuItem value="">Tất cả</MenuItem>
-							<MenuItem value="PAID">Đã thanh toán</MenuItem>
-							<MenuItem value="UNPAID">Chưa thanh toán</MenuItem>
-							<MenuItem value="REFUNDED">Đã hoàn tiền</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
+			{/* Search Filters */}
+			<Paper sx={{ p: 3 }}>
+				<Grid container spacing={3} alignItems="center">
+					<Grid size={{ xs: 12, sm: 6, md: 2 }}>
+						<TextField
+							fullWidth
+							size="small"
+							type="date"
+							label="Invoice Date"
+							value={searchDate}
+							onChange={(e) => setSearchDate(e.target.value)}
+							InputLabelProps={{ shrink: true }}
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position="start">
+										<SearchIcon />
+									</InputAdornment>
+								),
+							}}
+						/>
+					</Grid>
+					<Grid size={{ xs: 12, sm: 6, md: 2 }}>
+						<FormControl fullWidth size="small">
+							<InputLabel>Status</InputLabel>
+							<Select
+								value={statusFilter}
+								label="Status"
+								onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | "")}
+							>
+								<MenuItem value="">All</MenuItem>
+								<MenuItem value="UNPAID">Unpaid</MenuItem>
+								<MenuItem value="PAID">Paid</MenuItem>
+								<MenuItem value="REFUNDED">Refunded</MenuItem>
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid size={{ xs: 12, sm: 6, md: 2 }}>
+						<Box sx={{ display: "flex", gap: 1.5 }}>
+							<Button
+								variant="contained"
+								onClick={handleSearch}
+								startIcon={<SearchIcon />}
+							>
+								Search
+							</Button>
+							<Button
+								variant="outlined"
+								onClick={handleReset}
+								startIcon={<RefreshIcon />}
+							>
+								Reset
+							</Button>
+						</Box>
+					</Grid>
+				</Grid>
 			</Paper>
 
 			{/* Invoice Table */}
-			<Paper>
-				<TableContainer>
-					<Table>
-						<TableHead>
+			<Paper
+				sx={{
+					width: "100%",
+					overflow: "hidden",
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "space-between",
+					flex: 1,
+					p: 2,
+				}}
+			>
+				<Table
+					sx={{
+						"& .MuiTableCell-root": {
+							padding: "9px 8px",
+						},
+					}}
+				>
+					<TableHead>
+						<TableRow>
+							<TableCell sx={{ fontWeight: "bold" }}>#</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="right">Exam Fee</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="right">Medicine</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="right">Service</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="right">Total</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }}>Payment</TableCell>
+							<TableCell sx={{ fontWeight: "bold" }} align="center">Action</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{loading ? (
 							<TableRow>
-								<TableCell>Mã HĐ</TableCell>
-								<TableCell>Ngày lập</TableCell>
-								<TableCell align="right">Tiền khám</TableCell>
-								<TableCell align="right">Tiền dịch vụ</TableCell>
-								<TableCell align="right">Tiền thuốc</TableCell>
-								<TableCell align="right">Tổng tiền</TableCell>
-								<TableCell align="center">Trạng thái</TableCell>
-								<TableCell align="center">Chi tiết</TableCell>
+								<TableCell colSpan={9} align="center">
+									<CircularProgress size={28} sx={{ my: 2 }} />
+								</TableCell>
 							</TableRow>
-						</TableHead>
-						<TableBody>
-							{loading ? (
-								<TableRow>
-									<TableCell colSpan={8} align="center" sx={{ py: 5 }}>
-										<CircularProgress />
-									</TableCell>
-								</TableRow>
-							) : invoices.length === 0 ? (
-								<TableRow>
-									<TableCell colSpan={8} align="center" sx={{ py: 5 }}>
-										Không có hóa đơn nào
-									</TableCell>
-								</TableRow>
-							) : (
-								invoices.map((invoice) => (
-									<TableRow key={invoice.invoiceId} hover>
-										<TableCell>#{invoice.invoiceId}</TableCell>
+					) : !invoices || invoices.length === 0 ? (
+						<TableRow>
+							<TableCell colSpan={9} align="center">
+								No data available
+							</TableCell>
+						</TableRow>
+					) : (
+						invoices?.map((invoice, index) => {
+								const statusStyle = getStatusStyle(invoice.paymentStatus);
+								return (
+									<TableRow
+										key={invoice.invoiceId}
+										hover
+										sx={{ cursor: "pointer" }}
+										onClick={() => navigate(`/patient/invoices/${invoice.invoiceId}`)}
+									>
+										<TableCell sx={{ fontWeight: "bold" }}>
+											{(page - 1) * rowsPerPage + index + 1}
+										</TableCell>
 										<TableCell>{formatDate(invoice.invoiceDate)}</TableCell>
 										<TableCell align="right">
 											{formatCurrency(invoice.examinationFee)}
 										</TableCell>
 										<TableCell align="right">
-											{formatCurrency(invoice.serviceFee)}
-										</TableCell>
-										<TableCell align="right">
 											{formatCurrency(invoice.medicineFee)}
 										</TableCell>
 										<TableCell align="right">
-											<strong>{formatCurrency(invoice.totalAmount)}</strong>
+											{formatCurrency(invoice.serviceFee)}
 										</TableCell>
-										<TableCell align="center">
-											<Chip
-												size="small"
-												label={getStatusLabel(invoice.paymentStatus)}
-												color={getStatusColor(invoice.paymentStatus)}
-											/>
+										<TableCell align="right" sx={{ fontWeight: "bold" }}>
+											{formatCurrency(invoice.totalAmount)}
+										</TableCell>
+										<TableCell>
+											<Box
+												sx={{
+													display: "inline-flex",
+													borderRadius: 1,
+													padding: "2px 10px",
+													color: statusStyle.text,
+													bgcolor: statusStyle.bg,
+													fontSize: "12px",
+												}}
+											>
+												{statusStyle.label}
+											</Box>
+										</TableCell>
+										<TableCell>
+											{invoice.paymentMethodName || "-"}
 										</TableCell>
 										<TableCell align="center">
 											<IconButton
-												color="primary"
-												onClick={() =>
-													navigate(`/patient/invoices/${invoice.invoiceId}`)
-												}
+												onClick={(e) => {
+													e.stopPropagation();
+													navigate(`/patient/invoices/${invoice.invoiceId}`);
+												}}
+												sx={{
+													color: "var(--color-text-info)",
+													border: "1px solid var(--color-primary-main)",
+													borderRadius: 1.2,
+													height: 32,
+													width: 32,
+												}}
+												title="View Detail"
 											>
-												<ViewIcon />
+											<Typography>i</Typography>
 											</IconButton>
 										</TableCell>
 									</TableRow>
-								))
-							)}
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<TablePagination
-					component="div"
-					count={totalElements}
-					page={page}
-					onPageChange={handleChangePage}
-					rowsPerPage={rowsPerPage}
-					onRowsPerPageChange={handleChangeRowsPerPage}
-					rowsPerPageOptions={[5, 10, 25]}
-					labelRowsPerPage="Số dòng mỗi trang"
-				/>
+								);
+							})
+						)}
+					</TableBody>
+				</Table>
+
+				{/* Pagination */}
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						mr: 5,
+						mt: 3,
+					}}
+				>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+						<Typography sx={{ color: "var(--color-text-secondary)" }}>
+							Show
+						</Typography>
+						<Select
+							value={rowsPerPage}
+							onChange={(e) => {
+								setRowsPerPage(Number(e.target.value));
+								setPage(1);
+							}}
+							sx={{
+								"& .MuiInputBase-input": {
+									width: "20px",
+									py: "6px",
+								},
+							}}
+						>
+							{[7, 10, 15, 25].map((item) => (
+								<MenuItem key={item} value={item}>
+									{item}
+								</MenuItem>
+							))}
+						</Select>
+						<Typography sx={{ color: "var(--color-text-secondary)" }}>
+							results
+						</Typography>
+					</Box>
+
+					<Pagination
+						count={Math.ceil(totalElements / rowsPerPage) || 1}
+						page={page}
+						onChange={(_, val) => setPage(val)}
+						color="primary"
+						shape="rounded"
+						sx={{
+							"& .MuiPaginationItem-root": {
+								color: "var(--color-primary-main)",
+								"&.Mui-selected": {
+									color: "#fff",
+								},
+							},
+						}}
+					/>
+				</Box>
 			</Paper>
 		</Box>
 	);

@@ -290,18 +290,34 @@ const InvoiceDetailPage: React.FC = () => {
 		setSaving(true);
 
 		if (editingMedicineDetail) {
-			// Editing existing - send as array with detailId
-			const request: InvoiceMedicineDetailRequest = {
-				detailId: editingMedicineDetail.detailId,
-				medicineId: selectedMedicine.medicineId,
-				quantity: medicineQuantity,
-				salePrice: selectedMedicine.unitPrice,
-			};
+			// Lấy danh sách hiện tại từ state
+			const currentDetails = invoice?.medicineDetails || [];
+
+			// Tạo danh sách request đầy đủ (giữ nguyên cái cũ, cập nhật cái đang sửa)
+			const allDetailsRequest: InvoiceMedicineDetailRequest[] = currentDetails.map((item) => {
+				// Nếu là item đang sửa -> Dùng dữ liệu từ form
+				if (item.detailId === editingMedicineDetail.detailId) {
+					return {
+						detailId: item.detailId,
+						medicineId: selectedMedicine.medicineId,
+						quantity: medicineQuantity,
+						salePrice: selectedMedicine.unitPrice,
+					};
+				}
+				// Nếu là item khác -> Giữ nguyên dữ liệu cũ để không bị xóa
+				return {
+					detailId: item.detailId,
+					medicineId: item.medicineId,
+					quantity: item.quantity,
+					salePrice: item.salePrice,
+				};
+			});
+
 			apiCall(
 				invoiceMedicineDetails(role, parseInt(invoiceId!)),
 				"PUT",
 				token,
-				JSON.stringify({ details: [request] }),
+				JSON.stringify({ details: allDetailsRequest }),
 				() => {
 					setMedicineDialogOpen(false);
 					fetchInvoice();
@@ -390,18 +406,34 @@ const InvoiceDetailPage: React.FC = () => {
 		setSaving(true);
 
 		if (editingServiceDetail) {
-			// Editing existing
-			const request: InvoiceServiceDetailRequest = {
-				detailId: editingServiceDetail.detailId,
-				serviceId: selectedService.serviceId,
-				quantity: serviceQuantity,
-				salePrice: selectedService.unitPrice,
-			};
+			// Lấy danh sách hiện tại
+			const currentDetails = invoice?.serviceDetails || [];
+
+			// Tạo danh sách request đầy đủ
+			const allDetailsRequest: InvoiceServiceDetailRequest[] = currentDetails.map((item) => {
+				// Nếu là item đang sửa -> Dùng dữ liệu mới
+				if (item.detailId === editingServiceDetail.detailId) {
+					return {
+						detailId: item.detailId,
+						serviceId: selectedService.serviceId,
+						quantity: serviceQuantity,
+						salePrice: selectedService.unitPrice,
+					};
+				}
+				// Nếu là item khác -> Giữ nguyên
+				return {
+					detailId: item.detailId,
+					serviceId: item.serviceId,
+					quantity: item.quantity,
+					salePrice: item.salePrice,
+				};
+			});
+
 			apiCall(
 				invoiceServiceDetails(role, parseInt(invoiceId!)),
 				"PUT",
 				token,
-				JSON.stringify({ details: [request] }),
+				JSON.stringify({ details: allDetailsRequest }),
 				() => {
 					setServiceDialogOpen(false);
 					fetchInvoice();

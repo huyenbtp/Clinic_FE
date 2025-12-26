@@ -22,7 +22,6 @@ import {
 import Grid from "@mui/material/Grid";
 import {
 	Search as SearchIcon,
-	Visibility as ViewIcon,
 	Refresh as RefreshIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -92,13 +91,44 @@ const InvoiceList: React.FC = () => {
 			"GET",
 			token,
 			null,
-			(response: { data: PageResponse }) => {
-				setInvoices(response.data.content);
-				setTotalElements(response.data.totalElements);
+			(response: any) => {
+				console.log("🔥 ADMIN API DEBUG:", response);
+
+				let finalContent: InvoiceListItem[] = [];
+				let finalTotal = 0;
+
+				// TRƯỜNG HỢP 1: Axios chuẩn (response.data -> JSON Body -> .data -> Backend Data)
+				// Cấu trúc: response.data.data.content
+				if (response?.data?.data?.content && Array.isArray(response.data.data.content)) {
+					console.log("✅ Case 1: Axios Wrapped (response.data.data.content)");
+					finalContent = response.data.data.content;
+					finalTotal = response.data.data.totalElements || 0;
+				} 
+				// TRƯỜNG HỢP 2: apiCall đã bóc vỏ Axios (response -> JSON Body -> .data -> Backend Data)
+				// Cấu trúc: response.data.content
+				else if (response?.data?.content && Array.isArray(response.data.content)) {
+					console.log("✅ Case 2: JSON Body (response.data.content)");
+					finalContent = response.data.content;
+					finalTotal = response.data.totalElements || 0;
+				}
+				// TRƯỜNG HỢP 3: Backend trả về thẳng content (ít gặp nhưng có thể)
+				// Cấu trúc: response.content
+				else if (response?.content && Array.isArray(response.content)) {
+					console.log("✅ Case 3: Direct Content (response.content)");
+					finalContent = response.content;
+					finalTotal = response.totalElements || 0;
+				} else {
+					console.error("❌ Không tìm thấy data ở bất kỳ đường dẫn nào!");
+				}
+
+				setInvoices(finalContent);
+				setTotalElements(finalTotal);
 				setLoading(false);
 			},
 			(error: unknown) => {
-				console.error("Error fetching invoices:", error);
+				console.error("❌ Error fetching invoices:", error);
+				setInvoices([]);
+				setTotalElements(0);
 				setLoading(false);
 			}
 		);
@@ -363,7 +393,7 @@ const InvoiceList: React.FC = () => {
 													}}
 													title="View Detail"
 												>
-													<ViewIcon sx={{ fontSize: 18 }} />
+													<Typography>i</Typography>
 												</IconButton>
 											</TableCell>
 										</TableRow>
