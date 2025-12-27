@@ -44,6 +44,15 @@ import AppointmentBooking from "../pages/SharedPages/crudsAppointments/Appointme
 import AppointmentDetail from "../pages/SharedPages/crudsAppointments/AppointmentDetail/AppointmentDetail";
 import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
 import InvoiceDetail from "../pages/SharedPages/crudInvoice/InvoiceDetail/InvoiceDetail";
+import PrescriptionListPage from "../pages/Doctor/Prescriptions/page";
+import PrescriptionDetail from "../pages/Doctor/Prescriptions/detail";
+import PrescriptionCreatePage from "../pages/Doctor/Prescriptions/create";
+import PrescriptionUpdatePage from "../pages/Doctor/Prescriptions/update";
+import AppointmentUpdate from "../pages/SharedPages/crudsAppointments/AppointmentDetail/EditAppointment";
+
+// Invoice Management
+import { InvoiceList, InvoiceDetailPage } from "../pages/Receptionist/Invoice";
+import { PatientInvoiceHistory, PatientInvoiceDetail } from "../pages/Patient/Invoice";
 
 // Patient Medical Records
 import MedicalRecordsPage from "../pages/Patient/MedicalRecords/MedicalRecordsPage";
@@ -126,6 +135,10 @@ export default function AppRoutes() {
           <Route index element={<ScheduleList />} />
           <Route path="shift/:staffId/:date/:shiftType" element={<ShiftDetail />} />
         </Route>
+        <Route path="invoices">
+          <Route index element={<InvoiceList />} />
+          <Route path=":invoiceId" element={<InvoiceDetailPage />} />
+        </Route>
       </Route>
 
       {/* Doctor */}
@@ -144,6 +157,10 @@ export default function AppRoutes() {
           <Route index element={<PatientList />} />
           <Route path="patient-detail/:id" element={<PatientDetail />} />
         </Route>
+        <Route path="prescriptions" element={<PrescriptionListPage />} />
+        <Route path="prescription/:id" element={<PrescriptionDetail />} />
+        <Route path="prescription/create" element={<PrescriptionCreatePage />} />
+        <Route path="prescription/update/:prescriptionId" element={<PrescriptionUpdatePage />} />
       </Route>
 
       {/* Receptionist */}
@@ -171,6 +188,11 @@ export default function AppRoutes() {
         <Route path="appointment/:id" element={<AppointmentDetail />} />
         <Route path="medical_record/:id" element={<MedicalRecordDetail />} />
         <Route path="invoice/:id" element={<InvoiceDetail />} />
+        <Route path="invoices">
+          <Route index element={<InvoiceList />} />
+          <Route path=":invoiceId" element={<InvoiceDetailPage />} />
+        </Route>
+        <Route path="appointment/update/:appointmentId" element={<AppointmentUpdate />} />
 
       </Route>
 
@@ -201,6 +223,15 @@ export default function AppRoutes() {
         <Route path="appointments" element={<AppointmentBooking />} />
         <Route path="medical-records" element={<MedicalRecordsPage />} />
         <Route path="medical-record/:recordId" element={<MedicalRecordDetailPage />} />
+        <Route path="appointments" element={<AppointmentBooking />} />
+        <Route path="invoices">
+          <Route index element={<PatientInvoiceHistory />} />
+          <Route path=":invoiceId" element={<PatientInvoiceDetail />} />
+        </Route>
+        <Route path="appointments" element={<AppointmentList />} />
+        <Route path="book_appointment" element={<AppointmentBooking />} />
+        <Route path="appointment/:id" element={<AppointmentDetail />} />
+        <Route path="appointment/update/:appointmentId" element={<AppointmentUpdate />} />
       </Route>
 
       {/* Redirect fallback */}

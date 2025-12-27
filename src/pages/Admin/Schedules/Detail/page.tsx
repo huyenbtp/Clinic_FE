@@ -26,12 +26,25 @@ import {
   CheckCircle,
   Schedule,
   EventBusy,
+  Info,
+  Visibility,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiCall } from "../../../../api/api";
 import { scheduleGetDailyByStaff } from "../../../../api/urls";
 
 // Types
+interface TimeSlot {
+  staffScheduleId: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  appointmentId?: number;
+  appointmentStatus?: string;
+  patientId?: number;
+  patientName?: string;
+}
+
 interface ShiftResponse {
   staffId: number;
   staffName: string;
@@ -41,7 +54,7 @@ interface ShiftResponse {
   startTime: string;
   endTime: string;
   status: string;
-  timeSlots: { staffScheduleId: number }[];
+  timeSlots: TimeSlot[];
   totalSlotsCount: number;
   bookedSlotsCount: number;
 }
@@ -122,21 +135,19 @@ export default function ShiftDetailPage() {
   };
 
   const getTimeSlots = () => {
-    if (!shift) return [];
+    if (!shift || !shift.timeSlots) return [];
     
-    const isMorning = shift.shiftType === "MORNING";
-    const times = isMorning
-      ? ["08:00", "09:00", "10:00", "11:00"]
-      : ["13:00", "14:00", "15:00", "16:00"];
-
-    return times.map((time, idx) => ({
+    // Return the actual time slots from the API
+    return shift.timeSlots.map((slot, idx) => ({
       slotNumber: idx + 1,
-      startTime: time,
-      endTime: `${parseInt(time.split(":")[0]) + 1}:00`,
-      scheduleId: shift.timeSlots[idx]?.staffScheduleId || null,
-      status: shift.status, // In real app, each slot might have its own status
-      appointmentId: null, // TODO: Get from appointment data
-      patientName: null,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      scheduleId: slot.staffScheduleId,
+      status: slot.status,
+      appointmentId: slot.appointmentId || null,
+      appointmentStatus: slot.appointmentStatus || null,
+      patientId: slot.patientId || null,
+      patientName: slot.patientName || null,
     }));
   };
 
@@ -153,6 +164,12 @@ export default function ShiftDetailPage() {
       default:
         return <Chip label={status} size="small" />;
     }
+  };
+
+  const formatTime = (time: string) => {
+    if (!time) return "";
+    // If time is in HH:mm:ss format, extract HH:mm
+    return time.substring(0, 5);
   };
 
   if (loading) {
@@ -344,7 +361,7 @@ export default function ShiftDetailPage() {
                   </TableCell>
                   <TableCell>
                     <Typography fontWeight="500">
-                      {slot.startTime} - {slot.endTime}
+                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -352,18 +369,33 @@ export default function ShiftDetailPage() {
                   </TableCell>
                   <TableCell>
                     {slot.appointmentId ? (
-                      <Link
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => navigate(`/admin/appointment/${slot.appointmentId}`)}
-                      >
-                        #{slot.appointmentId}
-                      </Link>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Link
+                          sx={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5 }}
+                          onClick={() => navigate(`/receptionist/appointment/${slot.appointmentId}`)}
+                        >
+                          <Visibility sx={{ fontSize: 16 }} />
+                          View Appointment
+                        </Link>
+                      </Box>
                     ) : (
                       <Typography color="text.secondary">-</Typography>
                     )}
                   </TableCell>
                   <TableCell>
-                    {slot.patientName || (
+                    {slot.patientName ? (
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Typography>{slot.patientName}</Typography>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => navigate(`/admin/patients/patient-detail/${slot.patientId}`)}
+                          sx={{ padding: 0.5 }}
+                        >
+                          <Info sx={{ fontSize: 18 }} />
+                        </IconButton>
+                      </Box>
+                    ) : (
                       <Typography color="text.secondary">-</Typography>
                     )}
                   </TableCell>
