@@ -57,7 +57,7 @@ export default function ReceptionList() {
           <Divider />
 
           <Box flex={1} mt={3}>
-            <ReceptionTable filterStatus={filterStatus} filterDate={selectedDate}/>
+            <ReceptionTable filterStatus={filterStatus} filterDate={selectedDate} patientName={searchKey}/>
           </Box>
         </Card>
       </Box>

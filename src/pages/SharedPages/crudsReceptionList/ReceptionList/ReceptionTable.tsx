@@ -49,7 +49,11 @@ export function getStatusTextColor(status: string): string {
 
 
 
-export default function ReceptionTable({filterStatus, filterDate}) {
+export default function ReceptionTable({filterStatus, filterDate, patientName}:{
+  filterStatus:string,
+  filterDate:string|null,
+  patientName:string
+}) {
   const navigate = useNavigate();
   const { role } = useAuth();
   const [page, setPage] = useState(1);
@@ -83,6 +87,9 @@ export default function ReceptionTable({filterStatus, filterDate}) {
     if(filterDate) {
       url+=`&date=${filterDate}`;
     }
+    if(patientName&&patientName!="") {
+      url+=`&patientName=${patientName}`;
+    }
     apiCall(url,"GET",accessToken?accessToken:"",null,
       (data:any)=>{
         console.log(data.data.content);
@@ -112,7 +119,7 @@ export default function ReceptionTable({filterStatus, filterDate}) {
     fetchReceptions(page,rowsPerPage);
     
     
-  }, [page, rowsPerPage,filterStatus,filterDate]);
+  }, [page, rowsPerPage,filterStatus,filterDate,patientName]);
   
 
   return (
