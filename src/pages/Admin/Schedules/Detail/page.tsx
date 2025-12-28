@@ -372,7 +372,7 @@ export default function ShiftDetailPage() {
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Link
                           sx={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5 }}
-                          onClick={() => navigate(`/receptionist/appointment/${slot.appointmentId}`)}
+                          onClick={() => navigate(`/admin/appointment/${slot.appointmentId}`)}
                         >
                           <Visibility sx={{ fontSize: 16 }} />
                           View Appointment
