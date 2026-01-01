@@ -141,6 +141,11 @@ const LoginPage: React.FC = () => {
         <button onClick={(e)=>{
           navigate("/create_account");
         }}>Create account</button>
+        <button onClick={
+          (e)=>{
+            navigate("/forget_password");
+          }
+        }>Forget Password</button>
       </div>
     </div>
   );

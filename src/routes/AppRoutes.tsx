@@ -60,6 +60,9 @@ import MedicalRecordDetailPage from "../pages/Patient/MedicalRecords/MedicalReco
 import PatientRegister from "../pages/Register/RegisterNewPatient";
 import ChangePassword from "../pages/ChangePassword/ChangePassword";
 import CreateAccount from "../pages/Register/CreateAccount";
+import ForgotPassword from "../pages/ForgetPassword/ForgetPassword";
+import VerifyCode from "../pages/ForgetPassword/VerifyCode";
+import ResetPassword from "../pages/ForgetPassword/ResetPassword";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -82,6 +85,9 @@ export default function AppRoutes() {
       <Route path="/register_patient" element={<PatientRegister/>}/>
       <Route path="/change_password" element={<ChangePassword/>}/>
       <Route path="/create_account" element={<CreateAccount/>}/>
+      <Route path="/forget_password" element={<ForgotPassword/>}/>
+      <Route path="/verify_code" element={<VerifyCode/>}/>
+      <Route path="/reset_password" element={<ResetPassword/>}/>
       {/* Admin */}
       <Route
         path="/admin"
