@@ -164,6 +164,7 @@ export default function AppRoutes() {
         <Route index element={<DoctorDashboard />} />
         <Route path="reception-list" element={<ReceptionList />} />
         <Route path="medical-examination" element={<MedicalExamination />} />
+        <Route path="appointments" element={<AppointmentList/>}/>
         <Route path="patients">
           <Route index element={<PatientList />} />
           <Route path="patient-detail/:id" element={<PatientDetail />} />
@@ -231,10 +232,10 @@ export default function AppRoutes() {
 
         }
       >
-        <Route path="appointments" element={<AppointmentBooking />} />
+        
         <Route path="medical-records" element={<MedicalRecordsPage />} />
         <Route path="medical-record/:recordId" element={<MedicalRecordDetailPage />} />
-        <Route path="appointments" element={<AppointmentBooking />} />
+        
         <Route path="invoices">
           <Route index element={<PatientInvoiceHistory />} />
           <Route path=":invoiceId" element={<PatientInvoiceDetail />} />
@@ -243,6 +244,8 @@ export default function AppRoutes() {
         <Route path="book_appointment" element={<AppointmentBooking />} />
         <Route path="appointment/:id" element={<AppointmentDetail />} />
         <Route path="appointment/update/:appointmentId" element={<AppointmentUpdate />} />
+        <Route path="prescriptions" element={<PrescriptionListPage/>}/>
+        <Route path="prescription/:id" element={<PrescriptionDetail/>}/>
       </Route>
 
       {/* Redirect fallback */}

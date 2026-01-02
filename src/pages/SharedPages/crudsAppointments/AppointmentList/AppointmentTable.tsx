@@ -122,12 +122,17 @@ export default function AppointmentTable({
       
       
     }
-    if(role=="Receptionist"||role=="Admin") {
+    if(role=="Receptionist"||role=="Admin"||role=="Doctor") {
       let prefix="";
       if(role=="Receptionist") {
         prefix="receptionist";
       } 
-      else prefix="admin";
+      if(role=="Doctor") {
+        prefix="doctor";
+      }
+      if(role=="Admin") {
+        prefix="admin";
+      }
       url=`${prefix}/appointments?pageNumber=${page-1}&pageSize=${rowsPerPage}`;
       if(patientName&&patientName!="") {
         url+=`&patientName=${patientName}`;
