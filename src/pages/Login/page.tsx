@@ -136,6 +136,11 @@ const LoginPage: React.FC = () => {
       </div>
       <div>
         <button onClick={(e)=>{
+          navigate("/consultation");
+        }}>Smart consultation from image</button>
+      </div>
+      <div>
+        <button onClick={(e)=>{
           navigate("/register_patient");
         }}>Register for new patient</button>
         <button onClick={(e)=>{

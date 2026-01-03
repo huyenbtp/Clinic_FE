@@ -63,6 +63,7 @@ import CreateAccount from "../pages/Register/CreateAccount";
 import ForgotPassword from "../pages/ForgetPassword/ForgetPassword";
 import VerifyCode from "../pages/ForgetPassword/VerifyCode";
 import ResetPassword from "../pages/ForgetPassword/ResetPassword";
+import SmartConsultation from "../pages/Consultation/ConsultationPage";
 
 /*
 import PatientPage from "../pages/Patient/crud/PatientPage";
@@ -88,6 +89,7 @@ export default function AppRoutes() {
       <Route path="/forget_password" element={<ForgotPassword/>}/>
       <Route path="/verify_code" element={<VerifyCode/>}/>
       <Route path="/reset_password" element={<ResetPassword/>}/>
+      <Route path="/consultation" element={<SmartConsultation/>}/>
       {/* Admin */}
       <Route
         path="/admin"
