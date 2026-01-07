@@ -28,6 +28,8 @@ export const paymentMethodsGetActive = "payment-methods/active";
 export const systemParamGroupsSearch = (query: string) =>
 	`admin/sys-param-groups/search${query}`;
 export const systemParamGroupsCreate = "admin/sys-param-groups";
+
+export const warehouseDashboardStats = "warehouse/dashboard";
 export const systemParamGroupsUpdate = (id: number) =>
 	`admin/sys-param-groups/${id}`;
 export const systemParamGroupsDelete = (id: number) =>

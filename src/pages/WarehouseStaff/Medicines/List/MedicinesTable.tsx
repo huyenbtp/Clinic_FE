@@ -61,13 +61,13 @@ export default function MedicinesTable({
             <TableHead>
                <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>#</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Tên thuốc</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Đơn vị</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Nồng độ</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Nhà sản xuất</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Tồn kho</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Medicine Name</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Unit</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Concentration</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Manufacturer</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Stock</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }} align="center">
-                     Thao tác
+                     Actions
                   </TableCell>
                </TableRow>
             </TableHead>
@@ -92,19 +92,15 @@ export default function MedicinesTable({
                         <TableCell>{row.concentration || "-"}</TableCell>
                         <TableCell>{row.manufacturer || "-"}</TableCell>
                         <TableCell>
-                           <Box
+                           <Chip
+                              label={row.totalQuantity || 0}
+                              size="small"
                               sx={{
-                                 display: "inline-flex",
-                                 borderRadius: 1,
-                                 padding: "2px 14px",
-                                 color: (row.totalQuantity || 0) > 0 ? "var(--color-text-success)" : "var(--color-text-error)",
-                                 bgcolor: (row.totalQuantity || 0) > 0 ? "var(--color-bg-success)" : "var(--color-bg-error)",
-                                 fontWeight: 600,
-                                 fontSize: 16,
+                                 bgcolor: (row.totalQuantity || 0) > 0 ? '#dcfce7' : '#fee2e2',
+                                 fontWeight: 'bold',
+                                 color: (row.totalQuantity || 0) > 0 ? '#16a34a' : '#dc2626'
                               }}
-                           >
-                              {row.totalQuantity || 0}
-                           </Box>
+                           />
                         </TableCell>
                         <TableCell align="center">
                            <IconButton
@@ -117,7 +113,7 @@ export default function MedicinesTable({
                                  width: 32,
                                  mr: 1,
                               }}
-                              title="Xem chi tiết"
+                              title="View Detail"
                            >
                               <Visibility sx={{ fontSize: 20 }} />
                            </IconButton>
@@ -131,7 +127,7 @@ export default function MedicinesTable({
                                  width: 32,
                                  mr: 1,
                               }}
-                              title="Sửa"
+                              title="Edit"
                            >
                               <Edit sx={{ fontSize: 20 }} />
                            </IconButton>
@@ -144,7 +140,7 @@ export default function MedicinesTable({
                                  height: 32,
                                  width: 32,
                               }}
-                              title="Xóa"
+                              title="Delete"
                            >
                               <DeleteOutline sx={{ fontSize: 20 }} />
                            </IconButton>

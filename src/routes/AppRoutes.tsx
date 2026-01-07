@@ -58,22 +58,14 @@ import { PatientInvoiceHistory, PatientInvoiceDetail } from "../pages/Patient/In
 import MedicalRecordsPage from "../pages/Patient/MedicalRecords/MedicalRecordsPage";
 import MedicalRecordDetailPage from "../pages/Patient/MedicalRecords/MedicalRecordDetailPage";
 
+// Warehouse Staff - Dashboard
+import WarehouseStaffDashboard from "../pages/WarehouseStaff/Dashboard/page";
+
 // Warehouse Staff - Medicine Management
 import MedicinesList from "../pages/WarehouseStaff/Medicines/List/page";
 import MedicineDetailPage from "../pages/WarehouseStaff/Medicines/Detail/page";
 import MedicineCreateUpdatePage from "../pages/WarehouseStaff/Medicines/CreateUpdate/page";
 import PriceManagementPage from "../pages/WarehouseStaff/Medicines/Prices/page";
-
-/*
-import PatientPage from "../pages/Patient/crud/PatientPage";
-import NotFound from "../pages/Patient/crud/NotFound";
-import PatientDetail from "../pages/Patient/crud/PatientDetail";
-import CreatePatient from "../pages/Patient/crud/CreatePatient";
-import UpdatePatient from "../pages/Patient/crud/UpdatePatient";
-
-import WarehouseStaffDashboard from "../pages/WarehouseStaff/WarehouseStaffDashboard";
-import PatientDashboard from "../pages/Patient/PatientDashboard";
-*/
 export default function AppRoutes() {
   const { role } = useAuth();
 
@@ -211,7 +203,8 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/warehouse-staff/medicines" replace />} />
+        <Route index element={<WarehouseStaffDashboard />} />
+        <Route path="dashboard" element={<WarehouseStaffDashboard />} />
         <Route path="medicines">
           <Route index element={<MedicinesList />} />
           <Route path="create" element={<MedicineCreateUpdatePage />} />
