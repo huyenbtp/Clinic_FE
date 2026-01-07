@@ -1,6 +1,9 @@
 import ReactECharts from "echarts-for-react";
+import { useEffect, useMemo, useState } from "react";
+import { apiCall } from "../../../api/api";
+import { useNavigate } from "react-router-dom";
 
-const data = [
+const fakeData = [
   { month: "Jan", completed: 120, notshown: 15, cancelled: 21, waiting: 0, },
   { month: "Feb", completed: 110, notshown: 13, cancelled: 16, waiting: 0,  },
   { month: "Mar", completed: 150, notshown: 18, cancelled: 23, waiting: 0,  },
@@ -17,8 +20,20 @@ const data = [
 
 
 export default function AppointmentsChart() {
-  const option = {
-    tooltip: {
+  const [data, setData] = useState(fakeData);
+  const navigate = useNavigate();
+  useEffect(()=>{
+     const accessToken = localStorage.getItem("accessToken");
+     apiCall("admin/appointment_chart","GET",accessToken?accessToken:"",null,(responseData:any)=>{
+      setData(responseData.data);
+     },(responseData:any)=>{
+      alert(responseData.message);
+      navigate("/admin");
+     })
+  },[])
+  const option = useMemo(() => {
+  return {
+     tooltip: {
       trigger: "axis",
     },
     legend: {
@@ -86,6 +101,9 @@ export default function AppointmentsChart() {
       },
     ],
   };
+}, [data]);
+  
+  
 
   return (
     <div style={{ width: "100%", height: 350 }}>

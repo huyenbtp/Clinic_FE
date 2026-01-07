@@ -18,15 +18,9 @@ export default function AdminDashboard() {
                     fontWeight: 'bold',
                     fontSize: '24px'
                 }}>
-                    Welcome,
+                    Welcome
                 </Typography>
-                <Typography sx={{
-                    color: "var(--color-primary-main)",
-                    fontWeight: 'bold',
-                    fontSize: '24px'
-                }}>
-                    Dr. Robert Harry
-                </Typography>
+                
             </Box>
 
             <Box sx={{
