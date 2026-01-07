@@ -299,7 +299,7 @@ export default function AppointmentTable({
                   }
 
                   <IconButton
-                    onClick={() => { navigate(`/${role?.toLowerCase}/patients/patient-detail/${row.patient_id}`) }}
+                    onClick={() => { navigate(`/${role?.toLowerCase()}/patients/patient-detail/${row.patient_id}`) }}
                     sx={{
                       color: 'var(--color-text-info)',
                       border: '1px solid var(--color-primary-main)',
@@ -313,7 +313,7 @@ export default function AppointmentTable({
                   </IconButton>
                   <IconButton
                     onClick={() => { 
-                      const prefix = role=="Patient"?"patient":"receptionist";
+                      const prefix=role?.toLowerCase();
                       navigate(`/${prefix}/appointment/${row.appointment_id}`)
                      }}
                     sx={{

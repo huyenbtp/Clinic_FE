@@ -171,6 +171,7 @@ export default function AppRoutes() {
         <Route path="reception-list" element={<ReceptionList />} />
         <Route path="medical-examination" element={<MedicalExamination />} />
         <Route path="appointments" element={<AppointmentList/>}/>
+        <Route path="appointment/:id" element={<AppointmentDetail/>}/>
         <Route path="patients">
           <Route index element={<PatientList />} />
           <Route path="patient-detail/:id" element={<PatientDetail />} />
