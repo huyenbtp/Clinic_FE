@@ -28,6 +28,8 @@ export const paymentMethodsGetActive = "payment-methods/active";
 export const systemParamGroupsSearch = (query: string) =>
 	`admin/sys-param-groups/search${query}`;
 export const systemParamGroupsCreate = "admin/sys-param-groups";
+
+export const warehouseDashboardStats = "warehouse/dashboard";
 export const systemParamGroupsUpdate = (id: number) =>
 	`admin/sys-param-groups/${id}`;
 export const systemParamGroupsDelete = (id: number) =>
@@ -115,12 +117,18 @@ export const invoiceUpdate = (role: string, invoiceId: number) =>
 	`${role}/invoices/${invoiceId}`;
 export const invoiceMedicineDetails = (role: string, invoiceId: number) =>
 	`${role}/invoices/${invoiceId}/medicine-details`;
-export const invoiceMedicineDetailDelete = (role: string, invoiceId: number, detailId: number) =>
-	`${role}/invoices/${invoiceId}/medicine-details/${detailId}`;
+export const invoiceMedicineDetailDelete = (
+	role: string,
+	invoiceId: number,
+	detailId: number
+) => `${role}/invoices/${invoiceId}/medicine-details/${detailId}`;
 export const invoiceServiceDetails = (role: string, invoiceId: number) =>
 	`${role}/invoices/${invoiceId}/service-details`;
-export const invoiceServiceDetailDelete = (role: string, invoiceId: number, detailId: number) =>
-	`${role}/invoices/${invoiceId}/service-details/${detailId}`;
+export const invoiceServiceDetailDelete = (
+	role: string,
+	invoiceId: number,
+	detailId: number
+) => `${role}/invoices/${invoiceId}/service-details/${detailId}`;
 export const invoiceAvailableMedicines = (role: string) =>
 	`${role}/invoices/available-medicines`;
 export const invoiceMarkPaid = (role: string, invoiceId: number) =>
@@ -141,3 +149,27 @@ export const paymentCancelPayment = (role: string, orderCode: number) =>
 export const paymentVerifyPayment = (role: string) =>
 	`${role}/payment/verify-payment`;
 
+// ==================== WAREHOUSE - MEDICINE APIs ====================
+// Medicine Management
+export const warehouseMedicines = (query: string) =>
+	`warehouse/medicines${query}`;
+export const warehouseMedicinesAll = "warehouse/medicines/all";
+export const warehouseMedicineById = (id: number) =>
+	`warehouse/medicines/${id}`;
+export const warehouseMedicineCreate = "warehouse/medicines";
+export const warehouseMedicineUpdate = (id: number) =>
+	`warehouse/medicines/${id}`;
+export const warehouseMedicineDelete = (id: number) =>
+	`warehouse/medicines/${id}`;
+export const warehouseMedicineManufacturers =
+	"warehouse/medicines/manufacturers";
+
+// Medicine Price Management
+export const warehouseMedicinePrices = (medicineId: number) =>
+	`warehouse/medicines/${medicineId}/prices`;
+export const warehouseMedicinePriceAdd = (medicineId: number) =>
+	`warehouse/medicines/${medicineId}/prices`;
+export const warehouseMedicinePriceUpdate = (medicineId: number) =>
+	`warehouse/medicines/${medicineId}/prices`;
+export const warehouseMedicinePriceDelete = (medicineId: number) =>
+	`warehouse/medicines/${medicineId}/prices`;
