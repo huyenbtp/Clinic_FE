@@ -10,37 +10,24 @@ import {
     IconButton,
     CircularProgress,
     Container,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem
+    Snackbar,
+    Alert
 } from '@mui/material';
-import { 
-    Person, 
-    Lock, 
-    Visibility, 
-    VisibilityOff, 
-    Save, 
-    ArrowBack, 
-    Badge, 
-    AdminPanelSettings 
+import {
+    Person,
+    Lock,
+    Visibility,
+    VisibilityOff,
+    Save,
+    ArrowBack,
+    Badge
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { apiCall } from '../../api/api'; // Đảm bảo đường dẫn đúng
 
-// Enum Role khớp với Java
-const ROLES = [
-    { value: 'ADMIN', label: 'Admin' },
-    { value: 'RECEPTIONIST', label: 'Receptionist' },
-    { value: 'WAREHOUSE_STAFF', label: 'Warehouse Staff' },
-    { value: 'DOCTOR', label: 'Doctor' },
-    { value: 'PATIENT', label: 'Patient' }
-];
-
 interface CreateAccountRequest {
     actorId: number | '';
     username: string;
-    role: string;
     password: string;
 }
 
@@ -52,12 +39,22 @@ export default function CreateAccount() {
     const [formData, setFormData] = useState<CreateAccountRequest>({
         actorId: '',
         username: '',
-        role: '', // Default empty
         password: ''
     });
 
     // Visibility State for Password
     const [showPassword, setShowPassword] = useState(false);
+
+    // Snackbar State
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'error' | 'warning' | 'info'
+    });
+
+    const handleCloseSnackbar = () => {
+        setSnackbar(prev => ({ ...prev, open: false }));
+    };
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -69,14 +66,22 @@ export default function CreateAccount() {
 
     const handleSubmit = () => {
         // Validation
-        if (!formData.actorId || !formData.username || !formData.role || !formData.password) {
-            alert("Please fill in all required fields.");
+        if (!formData.actorId || !formData.username || !formData.password) {
+            setSnackbar({
+                open: true,
+                message: 'Please fill in all required fields.',
+                severity: 'warning'
+            });
             return;
         }
 
         // Validate actorId is number
         if (isNaN(Number(formData.actorId))) {
-            alert("Actor ID must be a number.");
+            setSnackbar({
+                open: true,
+                message: 'Actor ID must be a number.',
+                severity: 'error'
+            });
             return;
         }
 
@@ -91,17 +96,39 @@ export default function CreateAccount() {
 
         apiCall(
             'auth/link_account', // Endpoint giả định (thường Admin mới tạo đc tk cho staff)
-            'POST', 
+            'POST',
             null,
             JSON.stringify(payload),
             (data: any) => {
                 setLoading(false);
-                alert("Account created  and linked successfully!");
-                navigate(-1); // Quay lại trang danh sách
+                // Display detailed message from backend
+                const message = data.data?.message || "Account created and linked successfully!";
+                const actorName = data.data?.actorName;
+                const role = data.data?.role;
+
+                let displayMessage = message;
+                if (actorName && role) {
+                    displayMessage = `Successfully created account for ${actorName} (Role: ${role})`;
+                }
+
+                setSnackbar({
+                    open: true,
+                    message: displayMessage,
+                    severity: 'success'
+                });
+
+                // Navigate back after delay
+                setTimeout(() => {
+                    navigate(-1);
+                }, 2000);
             },
             (error: any) => {
                 setLoading(false);
-                alert(error.message || "Failed to create account. Username might be taken.");
+                setSnackbar({
+                    open: true,
+                    message: error.message || "Failed to create account. Please check the Staff ID and try again.",
+                    severity: 'error'
+                });
             }
         );
     };
@@ -109,11 +136,11 @@ export default function CreateAccount() {
     return (
         <Box sx={{
             minHeight: '100vh',
-            width: '100vw', 
+            width: '100vw',
             display: 'flex',
-            flexDirection: 'column', 
-            alignItems: 'center',    
-            justifyContent: 'center', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
             py: 4
         }}>
@@ -140,7 +167,7 @@ export default function CreateAccount() {
                     <Divider sx={{ mb: 4 }} />
 
                     <Box component="form" display="flex" flexDirection="column" gap={3}>
-                        
+
                         {/* Actor ID */}
                         <TextField
                             fullWidth
@@ -176,29 +203,6 @@ export default function CreateAccount() {
                                 ),
                             }}
                         />
-
-                        {/* Role Select */}
-                        <FormControl fullWidth required>
-                            <InputLabel id="role-select-label">Role</InputLabel>
-                            <Select
-                                labelId="role-select-label"
-                                name="role"
-                                value={formData.role}
-                                label="Role"
-                                onChange={handleChange}
-                                startAdornment={
-                                    <InputAdornment position="start" sx={{ mr: 2, ml: 1 }}>
-                                        <AdminPanelSettings color="action" />
-                                    </InputAdornment>
-                                }
-                            >
-                                {ROLES.map((role) => (
-                                    <MenuItem key={role.value} value={role.value}>
-                                        {role.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
 
                         {/* Password */}
                         <TextField
@@ -266,6 +270,23 @@ export default function CreateAccount() {
                     </Box>
                 </Card>
             </Container>
+
+            {/* Snackbar for notifications */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    variant="filled"
+                    sx={{ width: '100%', boxShadow: 3 }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

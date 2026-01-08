@@ -423,6 +423,7 @@ export default function CreateUpdateStaff() {
             buttonCancel="Cancel"
             buttonConfirm={isEditMode ? "Update" : "Create"}
             onConfirm={handleSubmit}
+            loading={loading}
          />
       </Box>
    );
