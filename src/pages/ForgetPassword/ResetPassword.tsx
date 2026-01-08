@@ -88,12 +88,14 @@ export default function ResetPassword() {
     if (isSuccess) {
         return (
             <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
                 minHeight: '100vh',
-                bgcolor: '#f4f7fa',
-                p: 2
+                width: '100vw', // Đảm bảo chiếm hết chiều rộng màn hình
+                display: 'flex',
+                flexDirection: 'column', // Sắp xếp theo cột
+                alignItems: 'center',    // Căn giữa theo chiều ngang
+                justifyContent: 'center', // Căn giữa theo chiều dọc
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                py: 4
             }}>
                 <Card sx={{
                     p: 5,
@@ -146,12 +148,14 @@ export default function ResetPassword() {
     // --- MÀN HÌNH NHẬP PASSWORD ---
     return (
         <Box sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             minHeight: '100vh',
-            bgcolor: '#f4f7fa',
-            p: 2
+            width: '100vw', // Đảm bảo chiếm hết chiều rộng màn hình
+            display: 'flex',
+            flexDirection: 'column', // Sắp xếp theo cột
+            alignItems: 'center',    // Căn giữa theo chiều ngang
+            justifyContent: 'center', // Căn giữa theo chiều dọc
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            py: 4
         }}>
             <Container maxWidth="xs">
                 <Card sx={{

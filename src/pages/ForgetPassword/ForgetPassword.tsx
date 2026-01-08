@@ -63,12 +63,14 @@ export default function ForgotPassword() {
     if (isSuccess) {
         return (
             <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
                 minHeight: '100vh',
-                bgcolor: '#f4f7fa',
-                p: 2
+                width: '100vw', 
+                display: 'flex',
+                flexDirection: 'column', 
+                alignItems: 'center',   
+                justifyContent: 'center', 
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                py: 4
             }}>
                 <Card sx={{
                     p: 5,
@@ -134,12 +136,14 @@ export default function ForgotPassword() {
     // Màn hình nhập Email
     return (
         <Box sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             minHeight: '100vh',
-            bgcolor: '#f4f7fa',
-            p: 2
+            width: '100vw', 
+            display: 'flex',
+            flexDirection: 'column', 
+            alignItems: 'center',    
+            justifyContent: 'center', 
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            py: 4
         }}>
             <Container maxWidth="xs">
                 <Card sx={{

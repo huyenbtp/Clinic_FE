@@ -108,12 +108,14 @@ export default function CreateAccount() {
 
     return (
         <Box sx={{
+            minHeight: '100vh',
+            width: '100vw', 
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh', // Full màn hình
-            bgcolor: '#f4f7fa',
-            p: 3
+            flexDirection: 'column', 
+            alignItems: 'center',    
+            justifyContent: 'center', 
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            py: 4
         }}>
             <Container maxWidth="sm">
                 <Card sx={{
@@ -148,7 +150,7 @@ export default function CreateAccount() {
                             onChange={handleChange}
                             required
                             type="number"
-                            helperText="ID của nhân viên hoặc bệnh nhân sở hữu tài khoản này"
+                            helperText="Your staff id "
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">

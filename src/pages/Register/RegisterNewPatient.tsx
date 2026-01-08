@@ -89,12 +89,14 @@ export default function PatientRegister() {
 
     return (
         <Box sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             minHeight: '100vh',
-            bgcolor: '#f4f7fa', // Màu nền giống dashboard
-            p: 2
+            width: '100vw', 
+            display: 'flex',
+            flexDirection: 'column', 
+            alignItems: 'center',    
+            justifyContent: 'center', 
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            py: 4
         }}>
             <Card sx={{
                 width: '100%',
