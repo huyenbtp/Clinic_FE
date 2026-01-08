@@ -78,7 +78,7 @@ export default function ReceptionList() {
           setIsNewFormOpen(false);
         },
       (data:any)=>{
-        showMessage(data.message);
+        showMessage(data.message,"error");
       })
           
         }}

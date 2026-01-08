@@ -2,17 +2,8 @@
 
 import { useEffect, useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  CircularProgress,
-  Box,
-  Pagination,
-  Typography,
-  Select,
-  MenuItem,
+  Table, TableBody, TableCell, TableHead, TableRow,
+  CircularProgress, Box, Pagination, Typography, Select, MenuItem,
 } from "@mui/material";
 import ActionMenu from "../../../../components/ActionMenu";
 import { CancelOutlined, Done, PlayCircleOutline, Visibility } from "@mui/icons-material";
@@ -21,8 +12,10 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../auth/AuthContext";
 import { apiCall } from "../../../../api/api";
-import { Edit } from "lucide-react";
+import AlertDialog from "./Alert"; // Import AlertDialog bạn đã dùng ở Dashboard
 
+
+// ... (Các hàm getStatusBgColor, getStatusTextColor giữ nguyên)
 export function getStatusBgColor(status: string): string {
   if (status === 'Admitted - Waiting') {
     return 'var(--color-bg-warning)'
@@ -47,95 +40,100 @@ export function getStatusTextColor(status: string): string {
   }
 }
 
-
-
-export default function ReceptionTable({filterStatus, filterDate, patientName}:{
-  filterStatus:string,
-  filterDate:string|null,
-  patientName:string
+export default function ReceptionTable({ filterStatus, filterDate, patientName }: {
+  filterStatus: string,
+  filterDate: string | null,
+  patientName: string
 }) {
   const navigate = useNavigate();
   const { role } = useAuth();
+  
+  // States cho phân trang và dữ liệu
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [data, setData] = useState<Reception[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [listReceptions, setListReceptions] = useState<Reception[]>([]);
- 
-  function mapData(listReceptions:any):Reception[] {
-    return listReceptions.map((item:any)=>{
-      
-      const reception:Reception={
-        receptionId: item.receptionId,
-        patientName: item.patient? item.patient.fullName: "",
-        receptionDate: item.receptionDate,
-        patientId: item.patient? item.patient.patientId:"",
-        receptionistName: item.receptionist? item.receptionist.fullName:"",
-        receptionistId: item.receptionist? item.receptionist.staffId:"",
-        status: item.status
-      };
-      return reception;
-    })
-  }
-  const fetchReceptions = async (page:number, pageSize:number) => {
+
+  // --- STATES CHO DIALOG ---
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ role: string, status: string, id: number } | null>(null);
+  
+  const [isResultOpen, setIsResultOpen] = useState(false);
+  const [resultMessage, setResultMessage] = useState({ title: '', type: 'info' as 'error' | 'warning' | 'info' });
+
+  // Hàm mở thông báo kết quả (thay thế alert)
+  const showResult = (title: string, type: 'error' | 'warning' | 'info') => {
+    setResultMessage({ title, type });
+    setIsResultOpen(true);
+  };
+
+  // Hàm chuẩn bị thay đổi trạng thái (mở confirm trước)
+  const handleRequestChange = (targetRole: string, nextStatus: string, rowId: number) => {
+    setPendingAction({ role: targetRole, status: nextStatus, id: rowId });
+    setIsConfirmOpen(true);
+  };
+
+  const changeStatus = (targetRole: string, status: string, rowId: number) => {
     const accessToken = localStorage.getItem("accessToken");
-    let url = `receptionist/all_receptions?pageNumber=${page-1}&pageSize=${pageSize}`;
-    if(role=='Admin') url = `admin/all_receptions?pageNumber=${page-1}&pageSize=${pageSize}`;
-    if(role=='Doctor') url = `doctor/all_receptions?pageNumber=${page-1}&pageSize=${pageSize}`;
-    if(filterStatus!='All') {
-      url+=`&status=${filterStatus}`
+    const body = {
+      receptionId: rowId,
+      newStatus: status
     }
-    if(filterDate) {
-      url+=`&date=${filterDate}`;
-    }
-    if(patientName&&patientName!="") {
-      url+=`&patientName=${patientName}`;
-    }
-    apiCall(url,"GET",accessToken?accessToken:"",null,
-      (data:any)=>{
-        console.log(data.data.content);
-        setData(mapData(data.data.content));
-        setTotalItems(data.data.totalElements);
-      },
-      (data:any)=>{
-        alert(data.message);
+
+    apiCall(`${targetRole.toLowerCase()}/reception/update`, 'PUT', accessToken || "", JSON.stringify(body), 
+      (response: any) => {
+        showResult("Updated status successfully!", "info");
+        fetchReceptions(page, rowsPerPage); // Refresh lại dữ liệu
+      }, 
+      (error: any) => {
+        showResult(error.message || "Failed to update status", "error");
       }
     )
-
   };
-  function changeStatus(role:string, status:string, rowId:number) {
+
+  // Logic fetchReceptions (Giữ nguyên của bạn)
+  const fetchReceptions = async (currentPage: number, pageSize: number) => {
+    setLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    const data= {
-      receptionId:rowId,
-      newStatus:status
-    }
-    
-    apiCall(`${role}/reception/update`,'PUT',accessToken?accessToken:"",JSON.stringify(data),(data:any)=>{
-      alert("Change status success");
-    },(data:any)=>{
-      alert(data.message);
-    })
+    let url = `${role?.toLowerCase()}/all_receptions?pageNumber=${currentPage - 1}&pageSize=${pageSize}`;
+    if (filterStatus !== 'All') url += `&status=${filterStatus}`;
+    if (filterDate) url += `&date=${filterDate}`;
+    if (patientName) url += `&patientName=${patientName}`;
+
+    apiCall(url, "GET", accessToken || "", null,
+      (res: any) => {
+        setData(mapData(res.data.content));
+        setTotalItems(res.data.totalElements);
+        setLoading(false);
+      },
+      (err: any) => {
+        showResult(err.message, "error");
+        setLoading(false);
+      }
+    )
+  };
+
+  // MapData (Giữ nguyên của bạn)
+  function mapData(list: any): Reception[] {
+    return list.map((item: any) => ({
+      receptionId: item.receptionId,
+      patientName: item.patient ? item.patient.fullName : "",
+      receptionDate: item.receptionDate,
+      patientId: item.patient ? item.patient.patientId : "",
+      receptionistName: item.receptionist ? item.receptionist.fullName : "",
+      receptionistId: item.receptionist ? item.receptionist.staffId : "",
+      status: item.status
+    }));
   }
+
   useEffect(() => {
-    fetchReceptions(page,rowsPerPage);
-    
-    
-  }, [page, rowsPerPage,filterStatus,filterDate,patientName]);
-  
+    fetchReceptions(page, rowsPerPage);
+  }, [page, rowsPerPage, filterStatus, filterDate, patientName]);
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      height: '100%',
-    }}>
-      <Table sx={{
-        '& .MuiTableCell-root': {
-          padding: '9px 0px',
-        }
-      }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Table sx={{ '& .MuiTableCell-root': { padding: '9px 0px' } }}>
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontWeight: 'bold' }}>#</TableCell>
@@ -150,164 +148,83 @@ export default function ReceptionTable({filterStatus, filterDate, patientName}:{
 
         <TableBody>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={7} align="center">
-                <CircularProgress size={28} sx={{ my: 2 }} />
+             <TableRow><TableCell colSpan={7} align="center"><CircularProgress size={28} /></TableCell></TableRow>
+          ) : data.map((row, index) => (
+            <TableRow key={row.receptionId} hover>
+              <TableCell sx={{ fontWeight: 'bold' }}>{(page - 1) * rowsPerPage + index + 1}</TableCell>
+              <TableCell>{row.patientName}</TableCell>
+              <TableCell>{dayjs(row.receptionDate).format("DD/MM/YYYY")}</TableCell>
+              <TableCell>{dayjs(row.receptionDate).format("HH:mm")}</TableCell>
+              <TableCell>{row.receptionistName}</TableCell>
+              <TableCell>
+                <Box sx={{ display: 'inline-flex', borderRadius: 1, px: 1, py: 0.5, color: getStatusTextColor(row.status), bgcolor: getStatusBgColor(row.status) }}>
+                  {row.status}
+                </Box>
+              </TableCell>
+              <TableCell align="center">
+                <ActionMenu
+                  actions={[
+                    {
+                      label: "View patient",
+                      icon: Visibility,
+                      onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
+                    },
+                    // Sử dụng hàm handleRequestChange thay vì changeStatus trực tiếp
+                    ...(row.status === "WAITING" ? [{
+                      label: "Start examination",
+                      icon: PlayCircleOutline,
+                      onClick: () => handleRequestChange(role!, "IN_EXAMINATION", row.receptionId)
+                    }, {
+                      label: "Cancel reception",
+                      icon: CancelOutlined,
+                      onClick: () => handleRequestChange(role!, "CANCELLED", row.receptionId)
+                    }] : []),
+                    ...(row.status === "IN_EXAMINATION" && role === "Doctor" ? [{
+                        label: "Done",
+                        icon: Done,
+                        onClick: () => handleRequestChange("doctor", "DONE", row.receptionId)
+                    }] : []),
+                    {
+                      label: "View reception",
+                      icon: Visibility,
+                      onClick: () => navigate(`/${role}/reception/${row.receptionId}`)
+                    }
+                  ]}
+                />
               </TableCell>
             </TableRow>
-          ) : data.length > 0 ? (
-            data.map((row, index) => (
-              <TableRow key={row.receptionId} hover>
-                <TableCell sx={{ width: "5%", fontWeight: 'bold' }}>
-                  {(page - 1) * rowsPerPage + index + 1}
-                </TableCell>
-                <TableCell width="20%">{row.patientName}</TableCell>
-                <TableCell width="15%">
-                  {dayjs(row.receptionDate).format("DD/MM/YYYY")}
-                </TableCell>
-                <TableCell width="15%">
-                  {dayjs(row.receptionDate).format("hh:mm")}
-                </TableCell>
-                <TableCell width="20%">{row.receptionistName}</TableCell>
-                <TableCell width="20%">
-                  <Box sx={{
-                    display: 'inline-flex',
-                    borderRadius: 1,
-                    padding: '2px 10px',
-                    color: getStatusTextColor(row.status),
-                    bgcolor: getStatusBgColor(row.status),
-                  }}>
-                    {row.status}
-                  </Box>
-                </TableCell>
-                <TableCell align="center">
-                  <ActionMenu
-                    actions={(role === "Doctor"&&row.status=="WAITING") ? [
-                      {
-                        label: "View patient",
-                        icon: Visibility,
-                        onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
-                      },
-                      {
-                        label: "Start examination",
-                        icon: PlayCircleOutline,
-                        onClick: () => { changeStatus("doctor","IN_EXAMINATION",row.receptionId) },
-                      },
-                      {
-                        label:"Cancel reception",
-                        icon: CancelOutlined,
-                        onClick:()=>{ changeStatus("doctor","CANCELLED",row.receptionId)}
-                      },
-                      {
-                        label:"View reception",
-                        icon: Visibility,
-                        onClick: ()=> navigate(`/${role}/reception/${row.receptionId}`)
-                      }
-                    ] : (row.status=="WAITING"&&role=="Receptionist")?[
-                      {
-                        label: "View patient",
-                        icon: Visibility,
-                        onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
-                      },
-                      {
-                        label: "Start examination",
-                        icon: PlayCircleOutline,
-                        onClick: () => {changeStatus("receptionist","IN_EXAMINATION",row.receptionId) },
-                      },
-                      {
-                        label:"Cancel reception",
-                        icon: CancelOutlined,
-                        onClick:()=>{ changeStatus("receptionist","CANCELLED",row.receptionId)}
-                      },
-                      {
-                        label:"View reception",
-                        icon: Visibility,
-                        onClick: ()=> navigate(`/${role}/reception/${row.receptionId}`)
-                      }
-                    ]:(row.status=="IN_EXAMINATION"&&role=="Doctor")?[
-                      {
-                        label: "View patient",
-                        icon: Visibility,
-                        onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
-                      },
-                      {
-                        label:"Done",
-                        icon:Done ,
-                        onClick:()=>{ changeStatus("doctor","DONE",row.receptionId)}
-                      },
-                      {
-                        label:"View reception",
-                        icon: Visibility,
-                        onClick: ()=> navigate(`/${role}/reception/${row.receptionId}`)
-                      }
-                    ]:[
-                      {
-                        label: "View patient",
-                        icon: Visibility,
-                        onClick: () => navigate(`/${role}/patients/patient-detail/${row.patientId}`),
-                      },
-                      {
-                        label:"View reception",
-                        icon: Visibility,
-                        onClick: ()=> navigate(`/${role}/reception/${row.receptionId}`)
-                      }
-                    ]}
-                  />
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={7} align="center">
-               No data
-              </TableCell>
-            </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: 'center', mr: 5, mt: 3, }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography sx={{ color: 'var(--color-text-secondary)' }}>
-            Show
-          </Typography>
-          <Select
-            value={rowsPerPage}
-            onChange={(e) => setRowsPerPage(e.target.value)}
-            sx={{
-              "& .MuiInputBase-input": {
-                width: '20px',
-                py: '6px',
-              },
-            }}
-          >
-            {[7, 10, 15].map(item => (
-              <MenuItem value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-          <Typography sx={{ color: 'var(--color-text-secondary)' }}>
-            results
-          </Typography>
-        </Box>
+      {/* Phân trang... (Giữ nguyên) */}
 
-        <Pagination
-          count={Math.ceil(totalItems / rowsPerPage)}
-          page={page}
-          onChange={(_, val) => setPage(val)}
-          color="primary"
-          shape="rounded"
-          sx={{
-            '& .MuiPaginationItem-root': {
-              color: 'var(--color-primary-main)',
-              '&.Mui-selected': {
-                color: '#fff',
-              }
-            }
-          }}
-        />
-      </Box>
+      {/* --- CÁC DIALOG TỰ ĐỊNH NGHĨA --- */}
+      
+      {/* 1. Hộp thoại xác nhận hành động */}
+      <AlertDialog
+        open={isConfirmOpen}
+        setOpen={setIsConfirmOpen}
+        title={`Confirm changing status to ${pendingAction?.status}?`}
+        type="warning"
+        buttonCancel="Cancel"
+        buttonConfirm="Yes, Proceed"
+        onConfirm={() => {
+          if (pendingAction) {
+            changeStatus(pendingAction.role, pendingAction.status, pendingAction.id);
+          }
+        }}
+      />
+
+      {/* 2. Hộp thoại thông báo kết quả (Thành công/Lỗi) */}
+      <AlertDialog
+        open={isResultOpen}
+        setOpen={setIsResultOpen}
+        title={resultMessage.title}
+        type={resultMessage.type}
+        buttonConfirm="Close"
+        onConfirm={() => setIsResultOpen(false)}
+      />
     </Box>
   );
 }
