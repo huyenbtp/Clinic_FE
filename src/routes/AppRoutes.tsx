@@ -35,6 +35,7 @@ import DoctorDashboard from "../pages/Doctor/Dashboard/page";
 import MedicalExamination from "../pages/Doctor/MedicalExam/page";
 import MedicalRecordsList from "../pages/SharedPages/crudMedicalRecords/MedicalRecordList/page";
 import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
+import MedicineImportsList from "../pages/SharedPages/crudMedicineImports/MedicineImportList/page";
 
 import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
 import ReceptionList from "../pages/SharedPages/crudsReceptionList/ReceptionList/page";
@@ -243,6 +244,13 @@ export default function AppRoutes() {
           <Route path="edit/:id" element={<MedicineCreateUpdatePage />} />
           <Route path=":id" element={<MedicineDetailPage />} />
           <Route path=":id/prices" element={<PriceManagementPage />} />
+        </Route>
+        <Route path="medicine-imports">
+          <Route index element={<MedicineImportsList />} />
+          {/** 
+          <Route path=":id" element={<MedicineImportDetail />} />          
+          <Route path="create" element={<CreateMedicineImport />} />
+          */}
         </Route>
       </Route>
 
