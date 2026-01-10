@@ -33,6 +33,8 @@ import ShiftDetail from "../pages/Admin/Schedules/Detail/page";
 
 import DoctorDashboard from "../pages/Doctor/Dashboard/page";
 import MedicalExamination from "../pages/Doctor/MedicalExam/page";
+import MedicalRecordsList from "../pages/SharedPages/crudMedicalRecords/MedicalRecordList/page";
+import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
 
 import ReceptionistDashboard from "../pages/Receptionist/Dashboard/page";
 import ReceptionList from "../pages/SharedPages/crudsReceptionList/ReceptionList/page";
@@ -42,7 +44,6 @@ import ServiceDetailPage from "../pages/SharedPages/crudsServices/ServiceDetail/
 import ServiceCreateForm from "../pages/SharedPages/crudsServices/CreateService/CreateService";
 import AppointmentBooking from "../pages/SharedPages/crudsAppointments/AppointmentBooking.tsx/page";
 import AppointmentDetail from "../pages/SharedPages/crudsAppointments/AppointmentDetail/AppointmentDetail";
-import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
 import InvoiceDetail from "../pages/SharedPages/crudInvoice/InvoiceDetail/InvoiceDetail";
 import PrescriptionListPage from "../pages/Doctor/Prescriptions/page";
 import PrescriptionDetail from "../pages/Doctor/Prescriptions/detail";
@@ -74,8 +75,8 @@ import MedicinesList from "../pages/WarehouseStaff/Medicines/List/page";
 import MedicineDetailPage from "../pages/WarehouseStaff/Medicines/Detail/page";
 import MedicineCreateUpdatePage from "../pages/WarehouseStaff/Medicines/CreateUpdate/page";
 import PriceManagementPage from "../pages/WarehouseStaff/Medicines/Prices/page";
-import MedicalRecordsList from "../pages/SharedPages/crudMedicalRecords/MedicalRecordList/page";
 import PatientDashboard from "../pages/Patient/Dashboard/page";
+
 export default function AppRoutes() {
   const { role } = useAuth();
 
