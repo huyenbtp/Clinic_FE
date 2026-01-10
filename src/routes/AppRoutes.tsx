@@ -75,6 +75,7 @@ import MedicineDetailPage from "../pages/WarehouseStaff/Medicines/Detail/page";
 import MedicineCreateUpdatePage from "../pages/WarehouseStaff/Medicines/CreateUpdate/page";
 import PriceManagementPage from "../pages/WarehouseStaff/Medicines/Prices/page";
 import MedicalRecordsList from "../pages/SharedPages/crudMedicalRecords/MedicalRecordList/page";
+import PatientDashboard from "../pages/Patient/Dashboard/page";
 export default function AppRoutes() {
   const { role } = useAuth();
 
@@ -255,7 +256,7 @@ export default function AppRoutes() {
 
         }
       >
-        
+        <Route index element={<PatientDashboard/>}/>
         <Route path="medical-records" element={<MedicalRecordsPage />} />
         <Route path="medical-record/:recordId" element={<MedicalRecordDetailPage />} />
         
