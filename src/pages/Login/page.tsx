@@ -39,7 +39,7 @@ const LoginPage: React.FC = () => {
     // --- LOGIC GIỮ NGUYÊN ---
     const handleLogin = () => {
         if (!selectedRole) {
-            alert('Vui lòng chọn vai trò trước khi đăng nhập!');
+            alert('Please choose role before login!');
             return;
         }
         loginToServer();
@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
             password: password
         }
         apiCall("auth/login", "POST", null, JSON.stringify(requestBody), loginSuccess, () => {
-            alert("Đăng nhập thất bại")
+            alert("Login fail")
         })
     }
 
@@ -61,27 +61,27 @@ const LoginPage: React.FC = () => {
 
         switch (selectedRole) {
             case 'Admin':
-                if (userRole !== "ADMIN") { alert("Đăng nhập thất bại: Vai trò không khớp"); return; }
+                if (userRole !== "ADMIN") { alert("Login fail: Role does not match"); return; }
                 login(selectedRole, token);
                 navigate('/admin');
                 break;
             case 'Doctor':
-                if (userRole !== "DOCTOR") { alert("Đăng nhập thất bại: Vai trò không khớp"); return; }
+                if (userRole !== "DOCTOR") { alert("Login fail: Role does not match"); return; }
                 login(selectedRole, token);
                 navigate('/doctor');
                 break;
             case 'Receptionist':
-                if (userRole !== "RECEPTIONIST") { alert("Đăng nhập thất bại: Vai trò không khớp"); return; }
+                if (userRole !== "RECEPTIONIST") { alert("Login fail: Role does not match"); return; }
                 login(selectedRole, token);
                 navigate('/receptionist');
                 break;
             case 'WarehouseStaff':
-                if (userRole !== "WAREHOUSE_STAFF") { alert("Đăng nhập thất bại: Vai trò không khớp"); return; }
+                if (userRole !== "WAREHOUSE_STAFF") { alert("Login fail: Role does not match"); return; }
                 login(selectedRole, token);
                 navigate('/warehouse-staff');
                 break;
             case 'Patient':
-                if (userRole !== "PATIENT") { alert("Đăng nhập thất bại: Vai trò không khớp"); return; }
+                if (userRole !== "PATIENT") { alert("Login fail: Role does not match"); return; }
                 login(selectedRole, token);
                 navigate('/patient');
                 break;
@@ -121,14 +121,14 @@ const LoginPage: React.FC = () => {
                         CLINIC SYSTEM
                     </Typography>
                     <Typography variant="body1" color="text.secondary" mb={4}>
-                        Đăng nhập để quản lý và sử dụng dịch vụ
+                        Login to use this system
                     </Typography>
 
                     {/* Form */}
                     <Stack spacing={3}>
                         <TextField
                             fullWidth
-                            label="Tên tài khoản"
+                            label="Account name"
                             variant="outlined"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -143,7 +143,7 @@ const LoginPage: React.FC = () => {
 
                         <TextField
                             fullWidth
-                            label="Mật khẩu"
+                            label="Password"
                             type="password"
                             variant="outlined"
                             value={password}
@@ -158,10 +158,10 @@ const LoginPage: React.FC = () => {
                         />
 
                         <FormControl fullWidth>
-                            <InputLabel id="role-label">Vai trò</InputLabel>
+                            <InputLabel id="role-label">Role</InputLabel>
                             <Select
                                 labelId="role-label"
-                                label="Vai trò"
+                                label="Role"
                                 value={selectedRole}
                                 onChange={(e) => setSelectedRole(e.target.value as Role)}
                                 startAdornment={
@@ -170,12 +170,12 @@ const LoginPage: React.FC = () => {
                                     </InputAdornment>
                                 }
                             >
-                                <MenuItem value=""><em>-- Chọn vai trò --</em></MenuItem>
+                                <MenuItem value=""><em>-- Choose role --</em></MenuItem>
                                 <MenuItem value="Admin">Admin</MenuItem>
-                                <MenuItem value="Doctor">Bác sĩ</MenuItem>
-                                <MenuItem value="Receptionist">Lễ tân</MenuItem>
-                                <MenuItem value="WarehouseStaff">Thủ kho / Cấp phát thuốc</MenuItem>
-                                <MenuItem value="Patient">Bệnh nhân</MenuItem>
+                                <MenuItem value="Doctor">Doctor</MenuItem>
+                                <MenuItem value="Receptionist">Receptionist</MenuItem>
+                                <MenuItem value="WarehouseStaff">Warehouse staff</MenuItem>
+                                <MenuItem value="Patient">Patient</MenuItem>
                             </Select>
                         </FormControl>
 
@@ -193,11 +193,11 @@ const LoginPage: React.FC = () => {
                                 '&:hover': { boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)' }
                             }}
                         >
-                            Đăng nhập
+                            Login
                         </Button>
                     </Stack>
 
-                    <Divider sx={{ my: 4 }}>Hoặc</Divider>
+                    <Divider sx={{ my: 4 }}>Or</Divider>
 
                     {/* Smart Consultation Section */}
                     <Button

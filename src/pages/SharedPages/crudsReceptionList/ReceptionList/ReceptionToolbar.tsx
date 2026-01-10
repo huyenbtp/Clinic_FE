@@ -1,4 +1,4 @@
-import { useRef, } from "react";
+import { useRef } from "react";
 import {
   Box,
   TextField,
@@ -21,17 +21,19 @@ export default function ReceptionToolbar({
   onChangeStatus,
   onOpenNewForm,
 }: {
-  searchKey: string,
-  onChangeSearchKey: (key: string) => void,
-  date: string,
-  onChangeDate: (date: string) => void,
-  status: string,
-  onChangeStatus: (status: string) => void,
-  onOpenNewForm: () => void,
-
+  searchKey: string;
+  onChangeSearchKey: (key: string) => void;
+  date: string;
+  onChangeDate: (date: string) => void;
+  status: string;
+  onChangeStatus: (status: string) => void;
+  onOpenNewForm: () => void;
 }) {
   const { role } = useAuth();
   const dateInputRef = useRef<HTMLInputElement>(null);
+
+  // Danh sách các trạng thái (Thêm "All" vào đầu hoặc cuối tùy bạn)
+  const statusOptions = ["All", "WAITING", "IN_EXAMINATION", "DONE", "CANCELLED"];
 
   return (
     <Box
@@ -42,13 +44,8 @@ export default function ReceptionToolbar({
         mb: 2,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          gap: 4,
-          alignItems: "center",
-        }}
-      >
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        {/* Search Input */}
         <TextField
           value={searchKey}
           onChange={(e) => onChangeSearchKey(e.target.value)}
@@ -56,98 +53,90 @@ export default function ReceptionToolbar({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Search size={22} color="var(--color-text-secondary)" />
+                <Search size={20} color="var(--color-text-secondary)" />
               </InputAdornment>
             ),
           }}
           sx={{
             bgcolor: "var(--color-primary-light)",
             borderRadius: 3,
-            width: '280px',
-            '& .MuiInputBase-root': {
-              pl: '18px',
-            },
-            '& .MuiInputBase-input': {
-              py: '10px',
-              pl: 1,
-              pr: 3
-            },
-            '& fieldset': {
-              border: 'none'
-            },
+            width: "280px",
+            "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+            "& .MuiInputBase-input": { py: "10px" },
           }}
         />
 
+        {/* Date Input */}
         <TextField
           value={date}
           onChange={(e) => onChangeDate(e.target.value)}
           type="date"
           inputRef={dateInputRef}
-          variant="outlined"
           InputProps={{
             endAdornment: (
-              <InputAdornment position="start">
-                <CalendarDays size={18} color="var(--color-primary-main)"
-                  onClick={() => dateInputRef.current?.showPicker()} />
+              <InputAdornment 
+                position="end" 
+                sx={{ cursor: 'pointer' }}
+                onClick={() => dateInputRef.current?.showPicker()}
+              >
+                <CalendarDays size={18} color="var(--color-primary-main)" />
               </InputAdornment>
             ),
           }}
           sx={{
             "& .MuiInputBase-root": {
-              color: "var(--color-text-placeholder)",
-              width: '180px',
-              cursor: "pointer",
-              "& input": {
-                cursor: "pointer",
-                px: '24px',
-                py: '10px',
-              },
+              width: "180px",
+              borderRadius: 3,
               "& fieldset": {
-                borderRadius: 3,
-                borderWidth: 1.6,
                 borderColor: "var(--color-primary-main)",
+                borderWidth: 1.6,
               },
             },
-
-            "& input::-webkit-calendar-picker-indicator": {
-              display: "none",
-            },
+            "& input": { py: "10px" },
+            "& input::-webkit-calendar-picker-indicator": { display: "none" },
           }}
         />
 
+        {/* Status Select */}
         <Select
-          value={status}
+          value={status || "All"} // Đảm bảo luôn có giá trị mặc định là "All"
           onChange={(e) => onChangeStatus(e.target.value)}
-          displayEmpty
+          // renderValue giúp hiển thị giá trị đã chọn đẹp hơn (giống chip)
+          renderValue={(selected) => (
+            <Box sx={{
+              display: 'inline-flex',
+              borderRadius: 1,
+              padding: '2px 10px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: getStatusTextColor(selected),
+              bgcolor: getStatusBgColor(selected),
+            }}>
+              {selected}
+            </Box>
+          )}
           sx={{
+            height: "42px",
+            minWidth: "160px",
             "& fieldset": {
               borderRadius: 3,
-              borderWidth: 1.6,
-              borderColor: "var(--color-primary-main)",
-            },
-            "& .MuiInputBase-input": {
-              display: 'flex',
-              width: '150px',
-              alignItems: 'center',
-              paddingY: '8px',
-              paddingLeft: "24px",
+              borderWidth: "1.6px !important",
+              borderColor: "var(--color-primary-main) !important",
             },
           }}
         >
-          <MenuItem value="">
-            <Box sx={{ padding: '2px 10px', }}>
-              ${status}
-            </Box>
-          </MenuItem>
-          {["DONE", "IN_EXAMINATION", "WAITING", "CANCELLED","All"].map(item => (
-            <MenuItem value={item}>
-              <Box sx={{
-                display: 'inline-flex',
-                borderRadius: 1,
-                padding: '2px 10px',
-                color: getStatusTextColor(item),
-                bgcolor: getStatusBgColor(item),
-              }}>
+          {statusOptions.map((item) => (
+            <MenuItem key={item} value={item}>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  borderRadius: 1,
+                  padding: "2px 10px",
+                  fontSize: "14px",
+                  color: getStatusTextColor(item),
+                  bgcolor: getStatusBgColor(item),
+                }}
+              >
                 {item}
               </Box>
             </MenuItem>
@@ -155,20 +144,22 @@ export default function ReceptionToolbar({
         </Select>
       </Box>
 
-      {role === "Receptionist" &&
+      {role === "Receptionist" && (
         <Button
           variant="contained"
-          startIcon={<Add sx={{ height: 24, width: 24, }} />}
+          startIcon={<Add />}
           onClick={onOpenNewForm}
           sx={{
-            borderRadius: 1,
+            borderRadius: 2,
             textTransform: "none",
             boxShadow: "none",
+            px: 3,
+            fontWeight: "bold",
           }}
         >
           New Reception
         </Button>
-      }
+      )}
     </Box>
-  )
+  );
 }
