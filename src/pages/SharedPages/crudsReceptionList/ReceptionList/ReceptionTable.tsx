@@ -196,8 +196,53 @@ export default function ReceptionTable({ filterStatus, filterDate, patientName }
           ))}
         </TableBody>
       </Table>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: 'center', mr: 5, mt: 3, }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography sx={{ color: 'var(--color-text-secondary)' }}>
+            Show
+          </Typography>
+          <Select
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(e.target.value)}
+            sx={{
+              "& .MuiInputBase-input": {
+                width: '20px',
+                py: '6px',
+              },
+            }}
+          >
+            {[7, 10, 15].map(item => (
+              <MenuItem value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+          <Typography sx={{ color: 'var(--color-text-secondary)' }}>
+            results
+          </Typography>
+        </Box>
+
+        <Pagination
+          count={Math.ceil(totalItems / rowsPerPage)}
+          page={page}
+          onChange={(_, val) => setPage(val)}
+          color="primary"
+          shape="rounded"
+          sx={{
+            '& .MuiPaginationItem-root': {
+              color: 'var(--color-primary-main)',
+              '&.Mui-selected': {
+                color: '#fff',
+              }
+            }
+          }}
+        />
+      </Box>
+
+      
 
       {/* Phân trang... (Giữ nguyên) */}
+      
 
       {/* --- CÁC DIALOG TỰ ĐỊNH NGHĨA --- */}
       
