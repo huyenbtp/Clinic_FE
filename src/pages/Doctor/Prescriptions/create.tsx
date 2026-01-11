@@ -103,7 +103,11 @@ const PrescriptionCreatePage = () => {
             navigate("/doctor");
         });
         apiCall("doctor/medicines","GET",accessToken?accessToken:"",null,(data:any)=>{
-            setMedicines(data.data.map((item:any)=>fromResponseToMedicineData(item)));
+            setMedicines(data.data.map((item:any)=>{
+                if(item.reception!=null&&item.reception.patient!=null) {
+                    fromResponseToMedicineData(item);
+                }
+            }));
         },(data:any)=>{
             alert(data.message);
             navigate("/doctor");})
