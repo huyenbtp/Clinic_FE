@@ -22,16 +22,40 @@ export default function ServiecList() {
       }}
     >
       {/* Header Row: Title, Search, and Action Button */}
-      <Stack
+ <Typography variant="h5" fontWeight="bold" mx={4} mb={3}>
+        Services list
+      </Typography>
+      {/* Table Container */}
+      <Card
+        elevation={0}
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          borderRadius: "16px",
+          border: "1px solid #eef2f6",
+          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.03)",
+          overflow: "hidden",
+          paddingTop:"20px",
+          marginTop:"20px"
+        }}
+      >
+       
+        <Box
+          sx={{
+            flex: 1,
+            overflow: "auto",
+            padding: "10px 24px", // Giảm padding 48px xuống 24px để cân đối hơn
+          }}
+        >
+          <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={2}
         alignItems="center"
         justifyContent="space-between"
         mb={3}
       >
-        <Typography variant="h5" fontWeight="800" color="#1e293b">
-          Services
-        </Typography>
+        
 
         <ServiceToolbar
           searchKey={searchKey}
@@ -55,27 +79,6 @@ export default function ServiecList() {
           Create Service
         </Button>
       </Stack>
-
-      {/* Table Container */}
-      <Card
-        elevation={0}
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          borderRadius: "16px",
-          border: "1px solid #eef2f6",
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.03)",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          sx={{
-            flex: 1,
-            overflow: "auto",
-            padding: "10px 24px", // Giảm padding 48px xuống 24px để cân đối hơn
-          }}
-        >
           <ServiceTable searchKey={searchKey} />
         </Box>
       </Card>
