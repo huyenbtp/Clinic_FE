@@ -6,6 +6,7 @@ import { Edit, Plus, Save } from "lucide-react";
 import { apiCall } from "../../../../api/api";
 import { useAuth } from "../../../../auth/AuthContext";
 import { showMessage } from "../../../../components/ActionResultMessage";
+import { doctorGetMedicines, adminGetMedicines } from "../../../../api/urls";
 
 const NullPrescription: PrescriptionRequest = {
   notes: "",
@@ -50,11 +51,11 @@ export default function PrescriptionInformation({
   };
 
   useEffect(() => {
-    if (role === "Patient") return;
+    if (role !== "Doctor") return;
 
     const accessToken = localStorage.getItem("accessToken");
 
-    apiCall("doctor/medicines", "GET", accessToken ? accessToken : "", null, (data: any) => {
+    apiCall(doctorGetMedicines, "GET", accessToken ? accessToken : "", null, (data: any) => {
       setMedicines(data.data);
     }, (data: any) => {
       showMessage(data.message);

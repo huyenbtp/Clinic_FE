@@ -5,7 +5,7 @@ import { useAuth } from "../../../../auth/AuthContext";
 import { useEffect, useState } from "react";
 import { Edit, Save } from "lucide-react";
 import { apiCall } from "../../../../api/api";
-import { diseaseTypesGetActiveByDoctor } from "../../../../api/urls";
+import { diseaseTypesGetActive, diseaseTypesGetActiveByDoctor } from "../../../../api/urls";
 
 export default function MedicalInformation({
   initialData,
@@ -25,9 +25,10 @@ export default function MedicalInformation({
   const [diseaseTypes, setDiseaseTypes] = useState<DiseaseType[]>([]);
 
   useEffect(() => {
-    if (role === "Patient") return;
+    if (role !== "Doctor") return;
 
     const accessToken = localStorage.getItem("accessToken");
+
     apiCall(diseaseTypesGetActiveByDoctor, "GET", accessToken || "", null,
       (response: any) => {
         setDiseaseTypes(response.data || []);
