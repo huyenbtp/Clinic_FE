@@ -5,18 +5,42 @@ import { useNavigate } from "react-router-dom";
 import { showMessage } from "../../../../components/ActionResultMessage";
 import { apiCall } from "../../../../api/api";
 import { ArrowBack } from "@mui/icons-material";
-import type { CreateMedicineImport, CreateUpdateImportDetailUI, Medicine } from "../../../../types/MedicineImport";
+import type { CreateUpdateImportDetailUI, Medicine } from "../../../../types/MedicineImport";
 import { Plus, Save } from "lucide-react";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import ImportDetailTable from "./ImportDetailTable";
+import { useAuth } from "../../../../auth/AuthContext";
+
+// Payload interface for creating import (importerId is handled by backend from auth token)
+interface CreateImportPayload {
+  importDate: string;
+  supplier: string;
+  details: Array<{
+    medicineId: number | null;
+    quantity: number;
+    importPrice: number;
+    expiryDate: string;
+  }>;
+}
 
 export default function CreateImport() {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const [confirmMessage, setConfirmMessage] = useState('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const importer = { staffId: 1, fullName: "Nguyễn Văn An" }; //fake
+  // Lấy thông tin importer - backend sẽ tự động lấy từ token
+  // Hiển thị username đã lưu trong localStorage
+  const importerName = localStorage.getItem("username") ?? "Current User";
+
+  // Xác định base URL theo role
+  const getApiPrefix = () => {
+    if (role === 'Admin') return 'admin';
+    if (role === 'WarehouseStaff') return 'store_keeper';
+    return 'api'; // fallback
+  };
+
   const [importDate, setImportDate] = useState(new Date().toISOString());
   const [supplier, setSupplier] = useState("");
   const [items, setItems] = useState<CreateUpdateImportDetailUI[]>([]);
@@ -25,11 +49,14 @@ export default function CreateImport() {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 
-    apiCall("warehouse/medicines/all", "GET", accessToken ? accessToken : "", null, (data: any) => {
-      setMedicineList(data.data);
-    }, (data: any) => {
-      showMessage(data.message);
-    })
+    apiCall("warehouse/medicines/all", "GET", accessToken ? accessToken : "", null, 
+      (response: { data: Medicine[] }) => {
+        setMedicineList(response.data);
+      }, 
+      (error: { message?: string }) => {
+        showMessage(error.message || "Failed to load medicines", "error");
+      }
+    );
 
   }, []);
 
@@ -83,19 +110,38 @@ export default function CreateImport() {
   }
 
   const handleSaveMedicineImport = () => {
-    const payload: CreateMedicineImport = {
-      importDate: new Date(importDate).toISOString(),
-      importerId: importer.staffId,
+    const accessToken = localStorage.getItem("accessToken");
+    const apiPrefix = getApiPrefix();
+    
+    // Backend will get importerId from the authenticated token
+    const payload: CreateImportPayload = {
+      importDate: new Date(importDate).toISOString().split('T')[0], // Backend expects Date format
       supplier: supplier,
-      importDetails: items.map(({ rowId, ...rest }) => rest),
+      details: items.map(({ rowId, ...rest }) => ({
+        medicineId: rest.medicineId,
+        quantity: rest.quantity,
+        importPrice: rest.importPrice,
+        expiryDate: rest.expiryDate,
+      })),
     }
 
-    //logic save
-
-    showMessage("The medicine import has been successfully saved!");
-
-    setIsConfirmDialogOpen(false);
-    // navigate(`../${importId}`);      //importId của import vừa tạo
+    apiCall(`${apiPrefix}/imports`, "POST", accessToken, JSON.stringify(payload),
+      (response: { data?: { importId?: number } }) => {
+        showMessage("The medicine import has been successfully saved!");
+        setIsConfirmDialogOpen(false);
+        // Navigate to the created import detail page
+        const createdImportId = response.data?.importId;
+        if (createdImportId) {
+          navigate(`../${createdImportId}`);
+        } else {
+          navigate('..');
+        }
+      },
+      (error: { message?: string }) => {
+        showMessage(error.message || "Failed to create import", "error");
+        setIsConfirmDialogOpen(false);
+      }
+    );
   }
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -176,7 +222,7 @@ export default function CreateImport() {
                 Importer:
               </Typography>
               <Typography fontSize={18} fontWeight="bold">
-                {importer.fullName}
+                {importerName}
               </Typography>
             </Box>
 
