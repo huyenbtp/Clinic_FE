@@ -244,6 +244,8 @@ export default function CreateImport() {
                 type="date"
                 value={dayjs(importDate).format("YYYY-MM-DD")}
                 onChange={(e) => setImportDate(e.target.value)}
+                inputProps={{ max: dayjs().format("YYYY-MM-DD") }}
+                sx={{ minWidth: 180 }}
               />
             </Box>
           </Card>
