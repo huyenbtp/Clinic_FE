@@ -61,6 +61,19 @@ export const diseaseTypesGetAll = "admin/disease-types/all";
 export const diseaseTypesGetActive = "admin/disease-types/active";
 export const diseaseTypesGetActiveByDoctor = "doctor/disease-types/active";
 
+// Admin - Statistics and Reports
+export const adminStatistic = "admin/statistic";
+export const adminAppointmentChart = (year: number) =>
+	`admin/appointment_chart?year=${year}`;
+export const adminAppointmentStatistic = (year: number) =>
+	`admin/appointment_statistic?year=${year}`;
+export const adminPatientVisitReport = (year: number) =>
+	`admin/patient_visit_report?year=${year}`;
+export const adminPatientVisitStatistic = (year: number) =>
+	`admin/patient_visit_statistic?year=${year}`;
+export const adminPatientVisitDetails = (year: number) =>
+	`admin/patient_visit_details?year=${year}`;
+
 // Admin - Staff Management (BE: /admin/staff)
 export const staffSearch = (query: string) => `admin/staff${query}`;
 export const staffCreate = "admin/staff";

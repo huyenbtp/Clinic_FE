@@ -3,9 +3,11 @@ import Grid from "@mui/material/Grid"; // Sử dụng Grid v2 để tránh lỗi
 import { People } from "@mui/icons-material";
 import { Calendar, DollarSign, TrendingUp, LayoutDashboard } from "lucide-react";
 import AppointmentStatistics from "./AppointmentStatistics";
+import PatientVisitReport from "./PatientVisitReport";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiCall } from "../../../api/api";
+import { Button } from "@mui/material";
 
 export default function AdminDashboard() {
     const [statisticData, setStatisticData] = useState({
@@ -57,7 +59,7 @@ export default function AdminDashboard() {
             <Grid container spacing={3} mb={4}>
                 {/* Today's Appointments */}
                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                    <StatCard 
+                    <StatCard
                         title="Today's Appointments"
                         value={statisticData.appointment}
                         subValue="+8 from yesterday"
@@ -68,7 +70,7 @@ export default function AdminDashboard() {
 
                 {/* Active Staff */}
                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                    <StatCard 
+                    <StatCard
                         title="Active Staff"
                         value={statisticData.staff}
                         subValue="On duty today"
@@ -78,7 +80,7 @@ export default function AdminDashboard() {
 
                 {/* Monthly Revenue */}
                 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                    <StatCard 
+                    <StatCard
                         title="Monthly Revenue"
                         value={`${formatCurrency(statisticData.income)} VND`}
                         subValue="+12% this month"
@@ -91,8 +93,8 @@ export default function AdminDashboard() {
             {/* Charts Area */}
             <Grid container spacing={3}>
                 <Grid size={{ xs: 12, lg: 8 }}>
-                    <Card sx={{ 
-                        borderRadius: "16px", 
+                    <Card sx={{
+                        borderRadius: "16px",
                         padding: "24px",
                         boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
                         border: "1px solid #e2e8f0",
@@ -105,11 +107,11 @@ export default function AdminDashboard() {
                         <AppointmentStatistics />
                     </Card>
                 </Grid>
-                
+
                 {/* Bạn có thể thêm một component nhỏ ở cột 4 (lg: 4) bên phải biểu đồ */}
                 <Grid size={{ xs: 12, lg: 4 }}>
-                    <Card sx={{ 
-                        borderRadius: "16px", 
+                    <Card sx={{
+                        borderRadius: "16px",
                         padding: "24px",
                         boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
                         border: "1px solid #e2e8f0",
@@ -121,12 +123,12 @@ export default function AdminDashboard() {
                             Manage your staff schedules and service prices easily.
                         </Typography>
                         <Stack spacing={1}>
-                            <Button variant="contained" sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: '#f1f5f9' }, textTransform: 'none', borderRadius: '8px' }} onClick={(e)=>{
+                            <Button variant="contained" sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: '#f1f5f9' }, textTransform: 'none', borderRadius: '8px' }} onClick={(e) => {
                                 navigate("/admin/patients")
                             }}>
                                 View Patients
                             </Button>
-                            <Button variant="outlined" sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)', textTransform: 'none', borderRadius: '8px' }} onClick={(e)=>{
+                            <Button variant="outlined" sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)', textTransform: 'none', borderRadius: '8px' }} onClick={(e) => {
                                 navigate("/admin/services");
                             }}>
                                 View Services
@@ -135,6 +137,11 @@ export default function AdminDashboard() {
                     </Card>
                 </Grid>
             </Grid>
+
+            {/* Patient Visit Report Section */}
+            <Box mt={4}>
+                <PatientVisitReport />
+            </Box>
         </Box>
     )
 }
@@ -165,9 +172,9 @@ function StatCard({ title, value, subValue, icon, trend, isRevenue }: any) {
                         </Typography>
                     </Stack>
                 </Box>
-                <Box sx={{ 
-                    bgcolor: '#f1f5f9', 
-                    padding: '12px', 
+                <Box sx={{
+                    bgcolor: '#f1f5f9',
+                    padding: '12px',
                     borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'center',
@@ -179,5 +186,3 @@ function StatCard({ title, value, subValue, icon, trend, isRevenue }: any) {
         </Card>
     );
 }
-
-import { Button } from "@mui/material";

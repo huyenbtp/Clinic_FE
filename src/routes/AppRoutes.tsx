@@ -7,6 +7,7 @@ import { useAuth } from "../auth/AuthContext";
 
 // Các trang
 import AdminDashboard from "../pages/Admin/Dashboard/page";
+import PatientReportsPage from "../pages/Admin/PatientReports/page";
 import PatientList from "../pages/SharedPages/crudsPatients/PatientList/page";
 import CreateUpdatePatient from "../pages/SharedPages/crudsPatients/CreateUpdatePatient/page";
 import PatientDetail from "../pages/SharedPages/crudsPatients/PatientDetail/page";
@@ -90,7 +91,7 @@ export default function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register_patient" element={<PatientRegister />} />
-      
+
       <Route path="/create_account" element={<CreateAccount />} />
       <Route path="/forget_password" element={<ForgotPassword />} />
       <Route path="/verify_code" element={<VerifyCode />} />
@@ -106,6 +107,7 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboard />} />
+        <Route path="reports/patients" element={<PatientReportsPage />} />
         <Route path="reception-list" element={<ReceptionList />} />
         <Route path="reception/:id" element={<ReceptionDetail />} />
         <Route path="appointment/:id" element={<AppointmentDetail />} />

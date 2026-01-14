@@ -44,6 +44,8 @@ export default function DashboardLayout() {
       { label: "Services", path: "/admin/services", icon: <MedicalServices /> },
       { label: "Disease Types", path: "/admin/disease-types", icon: <LocalHospital /> },
       { label: "Medicine Inventory", path: "/admin/medicine-imports", icon: <Inventory /> },
+      // Reports
+      { label: "Patient Reports", path: "/admin/reports/patients", icon: <ChartArea /> },
       // Financial
       { label: "Receipts", path: "/admin/invoices", icon: <ReceiptLong /> },
       { label: "Payment Methods", path: "/admin/payment-methods", icon: <Payment /> },
