@@ -32,6 +32,7 @@ import ScheduleList from "../pages/Admin/Schedules/List/page";
 import ShiftDetail from "../pages/Admin/Schedules/Detail/page";
 
 import DoctorDashboard from "../pages/Doctor/Dashboard/page";
+import DoctorStatistics from "../pages/Doctor/Statistics/page";
 
 import MedicalRecordsList from "../pages/SharedPages/crudMedicalRecords/MedicalRecordList/page";
 import MedicalRecordDetail from "../pages/SharedPages/crudMedicalRecords/MedicalRecordDetail/MedicalRecordDetail";
@@ -80,6 +81,7 @@ import PriceManagementPage from "../pages/WarehouseStaff/Medicines/Prices/page";
 import PatientDashboard from "../pages/Patient/Dashboard/page";
 import MedicineImportDetail from "../pages/SharedPages/crudMedicineImports/MedicineImportDetail/page";
 import EditImport from "../pages/SharedPages/crudMedicineImports/EditImport/page";
+import AdminRevenueStatistics from "../pages/Admin/Dashboard/RevenueStatistics/page";
 
 export default function AppRoutes() {
   const { role } = useAuth();
@@ -166,6 +168,7 @@ export default function AppRoutes() {
           <Route path="create" element={<CreateImport />} />
           <Route path=":id/edit" element={<EditImport />} />
         </Route>
+        <Route path="revenue-statistics" element={<AdminRevenueStatistics />} />
       </Route>
 
       {/* Doctor */}
@@ -197,6 +200,7 @@ export default function AppRoutes() {
         <Route path="prescription/:id" element={<PrescriptionDetail />} />
         <Route path="prescription/create" element={<PrescriptionCreatePage />} />
         <Route path="prescription/update/:prescriptionId" element={<PrescriptionUpdatePage />} />
+        <Route path="statistics" element={<DoctorStatistics />} />
       </Route>
 
       {/* Receptionist */}

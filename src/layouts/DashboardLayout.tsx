@@ -16,8 +16,9 @@ import {
   Settings,
   LocalHospital,
   FolderOpen,
+  BarChart,
 } from "@mui/icons-material";
-import { Calendar1, ChartArea, FolderTree } from "lucide-react";
+import { Calendar1, ChartArea, FolderTree, TrendingUp } from "lucide-react";
 
 export default function DashboardLayout() {
   const { role } = useAuth();
@@ -46,6 +47,7 @@ export default function DashboardLayout() {
       { label: "Medicine Inventory", path: "/admin/medicine-imports", icon: <Inventory /> },
       // Financial
       { label: "Receipts", path: "/admin/invoices", icon: <ReceiptLong /> },
+      { label: "Revenue Statistics", path: "/admin/revenue-statistics", icon: <TrendingUp /> },
       { label: "Payment Methods", path: "/admin/payment-methods", icon: <Payment /> },
       // System
       {
@@ -64,6 +66,7 @@ export default function DashboardLayout() {
       { label: "Patients", path: "/doctor/patients", icon: <People /> },
       { label: "Medical Records", path: "/doctor/medical-records", icon: <MedicalInformation /> },
       { label: "Prescriptions", path: "/doctor/prescriptions", icon: <MedicationLiquid /> },
+      { label: "Statistics", path: "/doctor/statistics", icon: <BarChart /> },
     ],
     Receptionist: [
       { label: "Dashboard", path: "/receptionist", icon: <Home /> },
