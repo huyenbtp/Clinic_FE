@@ -87,7 +87,7 @@ export default function AdminRevenueStatistics() {
     const fetchDoctors = () => {
         const accessToken = localStorage.getItem("accessToken");
         apiCall(
-            "admin/staffs/search?page=0&size=100&role=Doctor",
+            "admin/staff?page=0&size=100&role=DOCTOR",
             "GET",
             accessToken || "",
             null,
