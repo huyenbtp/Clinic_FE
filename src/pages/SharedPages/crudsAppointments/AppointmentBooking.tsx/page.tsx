@@ -76,7 +76,7 @@ export default function AppointmentBooking() {
       setIsSuccess(true);
     },(data:any)=>{
       alert(data.message);
-      navigate(role=="Patient"?"/patient":"/receptionist");
+      navigate(role=="Patient"?"/patient/appointments":"/receptionist");
     })
     
 

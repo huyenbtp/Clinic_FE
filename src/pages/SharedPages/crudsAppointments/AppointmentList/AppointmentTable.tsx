@@ -86,10 +86,13 @@ function mapAppointmentData(appointment:any) {
     patient_id: appointment.patient.patientId,
     patient_name: appointment.patient.fullName,
     doctor_name: appointment.doctorName,
-    appointment_date: appointment.appointmentDate,
+    appointment_date: typeof(appointment.appointmentDate),
     appointment_time: appointment.appointmentTime,
     status: getStatus(appointment.status)
   }
+}
+function canCheckin(appointmentDate:string, appointmentTime:string) {
+
 }
 export default function AppointmentTable({
   handleCancel,

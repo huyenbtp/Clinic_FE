@@ -24,6 +24,10 @@ export interface PrescriptionDetail {
   quantity: number;
   dosage: string;
   days: number;
+  morning: boolean;
+  afterNoon:boolean;
+  evening:boolean;
+  night:boolean;
 };
 
 export interface Medicine {
@@ -121,6 +125,7 @@ export default function MedicalRecordDetail() {
     apiCall(url, 'GET', accessToken || "", null,
       (response: any) => {
         const recordData = response.data;
+        console.log("RecordData",response.data);
         setData(recordData);
         setMedicalRecordData(recordData);
         setPrescriptionData(recordData.prescription);
@@ -215,6 +220,7 @@ export default function MedicalRecordDetail() {
   }
 
   const handleSavePrescription = (updatedPrescription: any) => {
+    console.log("Update prescription", updatedPrescription);
     if (!id || !data) return;
 
     const accessToken = localStorage.getItem("accessToken");
@@ -227,7 +233,11 @@ export default function MedicalRecordDetail() {
         medicineId: detail.medicine.medicineId,
         quantity: detail.quantity,
         dosage: detail.dosage,
-        days: detail.days
+        days: detail.days,
+        morning:detail.morning||false,
+        afterNoon:detail.afterNoon||false,
+        evening: detail.evening||false,
+        night:detail.night||false
       }));
 
     const body = {
@@ -235,13 +245,18 @@ export default function MedicalRecordDetail() {
       notes: updatedPrescription.notes || "",
       prescriptionDetails: prescriptionDetails
     };
+    for( let prescriptionDetail of prescriptionDetails) {
+      if(!prescriptionDetail.morning&&!prescriptionDetail.evening&&!prescriptionDetail.afterNoon&&!prescriptionDetail.night) {
+        alert("Please choose at least one in session");
+      }
+    }
 
     // Kiểm tra xem prescription đã tồn tại chưa
     const isNewPrescription = !updatedPrescription.prescriptionId;
     const url = isNewPrescription
       ? prescriptionCreate
       : prescriptionUpdate(updatedPrescription.prescriptionId);
-
+      console.log(body);
     apiCall(url, isNewPrescription ? 'POST' : 'PUT', accessToken || "", JSON.stringify(body),
       (response: any) => {
         showMessage("The prescription has been successfully saved!");

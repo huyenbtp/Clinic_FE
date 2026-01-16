@@ -2,6 +2,7 @@ import { Autocomplete, Box, Button, IconButton, Paper, Table, TableBody, TableCe
 import { type Medicine, type PrescriptionDetail } from "./MedicalRecordDetail"
 import { useEffect, useState } from "react"
 import { DeleteOutline } from "@mui/icons-material";
+import { Checkbox, FormControlLabel, FormGroup, Stack } from '@mui/material';
 import { Edit, Plus, Save } from "lucide-react";
 import { apiCall } from "../../../../api/api";
 import { useAuth } from "../../../../auth/AuthContext";
@@ -36,10 +37,12 @@ export default function PrescriptionInformation({
   const { role } = useAuth();
   const [data, setData] = useState<PrescriptionRequest>(initialData || NullPrescription);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+  
 
   // Update data when initialData changes
   useEffect(() => {
     if (initialData) {
+      console.log("Inot",initialData);
       setData(initialData);
     } else {
       // Khi prescription bị xóa hết hoặc null, reset về NullPrescription
@@ -58,6 +61,7 @@ export default function PrescriptionInformation({
     const accessToken = localStorage.getItem("accessToken");
 
     apiCall(doctorGetMedicines, "GET", accessToken ? accessToken : "", null, (data: any) => {
+      
       setMedicines(data.data);
     }, (data: any) => {
       showMessage(data.message);
@@ -75,7 +79,13 @@ export default function PrescriptionInformation({
       },
       quantity: 1,
       dosage: '',
-      days: 1
+      days: 1,
+      morning:false,
+      afterNoon:false,
+      evening:false,
+      night:false
+
+
     };
     setData(prev => ({
       ...prev,
@@ -93,6 +103,7 @@ export default function PrescriptionInformation({
 
   // Thay đổi thông tin trong dòng thuốc theo index
   const handleDetailChange = (index: number, field: keyof PrescriptionDetail, value: any) => {
+    console.log(data);
     setData(prev => ({
       ...prev,
       prescriptionDetail: prev.prescriptionDetail.map((detail, i) =>
@@ -234,13 +245,60 @@ export default function PrescriptionInformation({
                   </TableCell>
 
                   <TableCell>
-                    <TextField
-                      value={row.dosage}
-                      onChange={(e) => handleDetailChange(index, 'dosage', e.target.value)}
-                      size="small"
-                      variant="standard"
-                      disabled={!isEditing}
-                    />
+                   <Stack direction="row" spacing={1}>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={row.morning || false}
+          onChange={(e) => handleDetailChange(index, 'morning', e.target.checked)}
+          disabled={!isEditing}
+          size="small"
+          color="primary"
+        />
+      }
+      label="Morn"
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={row.afterNoon || false}
+          onChange={(e) => handleDetailChange(index, 'afterNoon', e.target.checked)}
+          disabled={!isEditing}
+          size="small"
+          color="primary"
+        />
+      }
+      label="Aft"
+    />
+    </Stack>
+    <br></br>
+    <Stack direction="row" spacing={1}>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={row.evening || false}
+          onChange={(e) => handleDetailChange(index, 'evening', e.target.checked)}
+          disabled={!isEditing}
+          size="small"
+          color="primary"
+        />
+      }
+      label="Eve"
+      
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={row.night || false}
+          onChange={(e) => handleDetailChange(index, 'night', e.target.checked)}
+          disabled={!isEditing}
+          size="small"
+          color="primary"
+        />
+      }
+      label="Night"
+    />
+  </Stack>
                   </TableCell>
 
                   <TableCell align="center">
